@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F4F3EF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F3EE">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Клубок">
@@ -13,7 +12,7 @@
 <link rel="icon" href="icon-192.png">
 <title>Мой клубок</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: phone column; sticky title; fixed 4-tab bar; full-screen sheets stack (view → edit) */
 :root{
@@ -23,10 +22,6 @@
   --f-d:"Unbounded","Arial Black",system-ui,sans-serif; --f-b:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141414; --surface:#1D1D1D; --ink:#F2F1EC; --mut:#9A978F; --line:#333331; --soft:#262624;
-  --blue:#4A74F0; --slate:#7D8DB0; --warn:#FF7A5C; --ok:#4CC27E; color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#141414; --surface:#1D1D1D; --ink:#F2F1EC; --mut:#9A978F; --line:#333331; --soft:#262624; --blue:#4A74F0; --slate:#7D8DB0; --warn:#FF7A5C; --ok:#4CC27E; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{background:var(--bg);color:var(--ink)}
 body{margin:0;font-family:var(--f-b);font-size:15px;line-height:1.4;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
@@ -251,6 +246,133 @@ details.more>.in{padding:0 14px 14px;display:grid;gap:12px}
 .idea{display:flex;gap:8px;align-items:flex-start;border-bottom:1.5px solid var(--line);padding:8px 0}
 .idea p{margin:0;flex:1;white-space:pre-wrap}
 .nb{font-size:12px;color:var(--mut)}
+
+/* ===== scrapbook skin: paper, tape, handwriting, knitted patches ===== */
+:root{--f-d:"Caveat","Segoe Print","Comic Sans MS",cursive; --f-b:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif; --acc:#6B6B2F; --acc-ink:#fff; --tape:rgba(183,166,224,.45); --on-blue:#111; --on-yel:#111; --on-grn:#fff; --warn:#B23A3A; --ok:#3E7D4F}
+body{background-color:var(--bg);background-image:radial-gradient(color-mix(in srgb,var(--ink) 8%,transparent) 1px,transparent 1.3px);background-size:9px 9px}
+.grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.3;mix-blend-mode:multiply}
+.wrap{position:relative;z-index:1}
+header.top{background:var(--bg);padding-block:16px 8px}
+h1{font:700 46px/1 var(--f-d);letter-spacing:0}
+.cnt{font:700 19px/1.2 var(--f-d);background:var(--surface);color:var(--ink);padding:2px 10px;transform:rotate(3deg);box-shadow:0 2px 5px rgba(0,0,0,.12)}
+.menu-btn{border:0;background:var(--surface);box-shadow:0 2px 5px rgba(0,0,0,.14);border-radius:4px;transform:rotate(-3deg)}
+.h3{font:700 27px/1 var(--f-d);letter-spacing:0;text-transform:none;color:var(--acc);margin:4px 4px 4px}
+.h3 i{display:none}
+.btn{border:0;border-radius:6px;background:var(--acc);color:var(--acc-ink);box-shadow:0 2px 0 rgba(0,0,0,.14);font-weight:700}
+.btn.red{background:var(--acc);color:var(--acc-ink)}
+.btn.line{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.danger{background:transparent;color:var(--warn);box-shadow:inset 0 0 0 1.5px var(--warn)}
+.chip{border:0;border-radius:999px;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+nav.tabs{border-top:0;box-shadow:0 -2px 12px rgba(0,0,0,.09);background:var(--surface)}
+nav.tabs button{font:700 19px/1 var(--f-d);gap:3px}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button[aria-current="page"] span{text-decoration:underline wavy var(--acc) 1.5px;text-underline-offset:5px}
+.fab{border-radius:50%;background:var(--acc);color:var(--acc-ink);box-shadow:0 5px 14px rgba(0,0,0,.22)}
+.fab::after{content:"";position:absolute;inset:5px;border:2px dashed color-mix(in srgb,var(--acc-ink) 55%,transparent);border-radius:50%}
+.shelf{background:var(--surface);padding:12px 10px 2px;margin:10px 2px 24px;position:relative;box-shadow:0 2px 9px rgba(40,30,20,.11);background-image:repeating-linear-gradient(transparent 0 25px,color-mix(in srgb,var(--ink) 6%,transparent) 25px 26px)}
+.shelf::before{content:"";position:absolute;width:78px;height:20px;background:var(--tape);top:-9px;left:50%;transform:translateX(-50%) rotate(-3deg)}
+.board{height:3px;background:var(--ink);opacity:.75;margin:0 4px 16px}
+.board::before,.board::after{display:none}
+.yb .q{font:700 18px/1 var(--f-d);border:0;background:transparent;color:var(--ink);bottom:0}
+.yb .tag{background:var(--acc)}
+.empty{border:0;background:var(--surface);box-shadow:0 2px 9px rgba(40,30,20,.11);transform:rotate(-.6deg)}
+.empty h2{font:700 30px/1.1 var(--f-d)}
+.patchy{position:relative;background:transparent!important;display:grid;place-items:center}
+.patchy>svg.pbg{position:absolute;inset:0;width:100%;height:100%}
+.patchy .pic{position:relative;width:46%;max-width:60px;aspect-ratio:1;filter:url(#wob);display:grid}
+.patchy .pic svg{width:100%;height:100%}
+.tiles{gap:16px 12px}
+.tl{overflow:visible;background:transparent;color:var(--ink)}
+.tl.pol{background:var(--surface);padding:6px 6px 30px;box-shadow:0 3px 9px rgba(0,0,0,.17);aspect-ratio:auto;display:block}
+.tl.pol .pim{position:relative;display:block;width:100%;height:0;padding-top:100%;overflow:hidden;background:var(--soft)}
+.tl.pol img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tl em{background:none;color:var(--ink);font:700 18px/1.1 var(--f-d);padding:0 6px;bottom:6px;text-align:center}
+.tl.patchy em{color:inherit;text-align:left;bottom:9px;left:7px;right:7px;font-size:17px}
+.tiles>.tl:nth-child(3n+1),.ptiles>.tl:nth-child(4n+1){transform:rotate(-1.5deg)}
+.tiles>.tl:nth-child(3n+2),.ptiles>.tl:nth-child(4n+2){transform:rotate(1.2deg)}
+.tiles>.tl:nth-child(3n),.ptiles>.tl:nth-child(4n){transform:rotate(-.6deg)}
+.ptiles .tl em{font-size:14px}
+.bk{border:0;background:var(--surface);box-shadow:0 2px 9px rgba(40,30,20,.13)}
+.bk:nth-child(odd){transform:rotate(-.8deg)}.bk:nth-child(even){transform:rotate(.8deg)}
+.bk .ref{margin:8px 8px 0;height:104px}
+.bk.new{box-shadow:none;background:transparent;border:2px dashed var(--mut);transform:none}
+.bk.new b{font:700 40px var(--f-d)}
+.bk .t b{font:700 22px/1.05 var(--f-d)}
+.basket .bb{border-top:2px solid var(--ink)}
+.bow{background:var(--acc);color:var(--acc-ink);font:700 16px/1.2 var(--f-d);transform:rotate(4deg)}
+.strip{background:var(--surface);color:var(--ink);box-shadow:0 2px 9px rgba(40,30,20,.13);font:700 23px var(--f-d)}
+.strip b{background:var(--acc);color:var(--acc-ink);font:600 13px var(--f-b)}
+.wc{border:0;background:var(--surface);box-shadow:0 2px 9px rgba(40,30,20,.13)}
+.wc .im.patchy{margin:6px}
+.wc .mid b{font:700 23px/1.05 var(--f-d)}
+.tbtn{border-left:0;background:var(--acc);color:var(--acc-ink);font:700 18px var(--f-d)}
+.tbtn.on{background:var(--ink);color:var(--bg)}
+.bar{background:var(--soft)}.bar i{background:var(--acc)}
+.sheet{background-color:var(--bg);background-image:radial-gradient(color-mix(in srgb,var(--ink) 8%,transparent) 1px,transparent 1.3px);background-size:9px 9px}
+.sh-head{background:var(--bg)}
+.sh-head h2{font:700 30px/1 var(--f-d)}
+.sq-btn{border:0;background:var(--surface);box-shadow:0 2px 5px rgba(0,0,0,.14);border-radius:4px}
+.gal-wrap{background:var(--surface);padding:8px 8px 10px;margin:8px 2px 4px;box-shadow:0 5px 14px rgba(0,0,0,.16);transform:rotate(-1deg)}
+.gal-wrap::before{content:"";position:absolute;z-index:2;width:84px;height:22px;background:var(--tape);top:-10px;left:50%;transform:translateX(-50%) rotate(3deg)}
+.gal{margin:0;height:min(72vw,340px)}
+.gal.nophoto{margin:14px auto 6px;height:min(60vw,240px);width:min(60vw,240px);background:transparent;overflow:visible;transform:rotate(-2deg)}
+.gal.nophoto .sl{flex:1}
+.gal.nophoto .sl .pic{max-width:120px}
+.gal-lab{background:var(--surface);color:var(--ink);font:700 16px var(--f-d);transform:rotate(-3deg)}
+.ttl h3{font:700 38px/1 var(--f-d);letter-spacing:0}
+.pill{font:700 18px/1.2 var(--f-d);padding:1px 10px;transform:rotate(3deg);box-shadow:0 2px 4px rgba(0,0,0,.13)}
+.p-plan{background:var(--blue);color:var(--on-blue)}.p-wip{background:var(--yel);color:var(--on-yel)}.p-done{background:var(--grn);color:var(--on-grn)}.p-frozen{background:var(--surface);color:var(--mut)}
+.k{border:0;box-shadow:0 2px 7px rgba(0,0,0,.13)}
+.kp>.k:nth-child(1){transform:rotate(-1.5deg)}.kp>.k:nth-child(2){transform:rotate(1deg)}
+.k small{font:600 10.5px var(--f-b);color:var(--mut);letter-spacing:.08em}
+.k.hook{background:var(--acc);color:var(--acc-ink)}.k.hook small{color:inherit;opacity:.8}
+.k.hook b{font:700 46px/1 var(--f-d)}.k.hook span{font:700 17px var(--f-d)}
+.k.sch a,.k.sch .lnk{color:var(--ink);text-decoration:underline;font:700 17px var(--f-d)}
+.facts span{border:0;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.11);font:700 18px/1.2 var(--f-d);padding:3px 10px}
+.facts a{border:0;background:var(--surface);color:var(--ink);text-decoration:underline;font:700 18px/1.2 var(--f-d);box-shadow:0 1px 4px rgba(0,0,0,.11);padding:3px 10px}
+.blk{border:0;box-shadow:0 2px 9px rgba(40,30,20,.11)}
+.blk-h b{font:700 24px/1 var(--f-d);letter-spacing:0;text-transform:none;color:var(--acc)}
+.sqs button{background:var(--soft);border-radius:2px}
+.parts button{border:0;background:var(--soft);font:700 19px/1.1 var(--f-d);border-radius:4px}
+.parts button.on{background:var(--acc);color:var(--acc-ink)}
+.counter b{font:700 56px/1 var(--f-d)}
+.counter button{border:0;background:var(--surface);box-shadow:0 2px 5px rgba(0,0,0,.14);font:700 30px/1 var(--f-d);border-radius:6px}
+.counter button.plus{background:var(--acc);color:var(--acc-ink)}
+.big-timer{border:0;background:var(--yel);color:var(--on-yel);box-shadow:0 2px 7px rgba(0,0,0,.13);font:700 24px var(--f-d);border-radius:6px}
+.big-timer.on{background:var(--ink);color:var(--bg)}
+.big-timer .tick{font:700 30px var(--f-d)}
+.stepper b{font:700 36px/1 var(--f-d)}
+.stepper button{border:0;background:var(--soft);font:700 24px/1 var(--f-d);border-radius:4px}
+.kpy .k b{font:700 34px/1 var(--f-d)}
+.cdots i{border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+.hero-ball{background:transparent}
+.hero-photo{background:var(--surface);padding:8px 8px 10px;width:auto;margin:8px 2px 6px;box-shadow:0 5px 14px rgba(0,0,0,.16);transform:rotate(-1deg);height:min(76vw,340px)}
+.hero-photo .ball-badge{top:20px;right:20px}
+.sec,details.more{border:0;background:var(--surface);box-shadow:0 2px 9px rgba(40,30,20,.11)}
+.confirm{border:0;background:var(--surface);box-shadow:inset 0 0 0 2px var(--warn)}
+.sec h4,.sec-h h4,details.more>summary{font:700 25px/1 var(--f-d)}
+input[type=text],input[type=number],input[type=url],input[type=date],select,textarea{border:1.5px solid var(--line);background:var(--bg);border-radius:5px}
+.seg button{border:1.5px solid var(--line);border-radius:999px;background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.catgrid{gap:8px}
+.catgrid button{border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.14);font:700 15px/1 var(--f-d)}
+.catgrid button:nth-child(odd){transform:rotate(-1.5deg)}.catgrid button:nth-child(even){transform:rotate(1.2deg)}
+.catgrid button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink);border-color:transparent}
+.row{border:1.5px dashed var(--line);border-radius:6px}
+.shop-item{border:0;background:var(--surface);box-shadow:0 1px 5px rgba(0,0,0,.11)}
+.scene{border:0;background:var(--surface);padding:6px;box-shadow:0 3px 11px rgba(0,0,0,.15);transform:rotate(-.6deg);margin:6px 2px 10px}
+.toast{border-radius:6px;font:700 20px var(--f-d);padding:8px 16px}
+.link-out,.yrow em{font-weight:600}
+.link-out{color:var(--ink);text-decoration:underline}
+.add-img{border-color:var(--mut);border-radius:4px}.add-img b{font:700 30px var(--f-d)}
+.theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.theme-grid button{border:0;background:var(--surface);padding:6px 6px 4px;box-shadow:0 2px 6px rgba(0,0,0,.14);display:grid;gap:4px;font:700 16px/1.05 var(--f-d);text-align:left;min-width:0}
+.theme-grid button:nth-child(odd){transform:rotate(-1deg)}.theme-grid button:nth-child(even){transform:rotate(1deg)}
+.theme-grid button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+.theme-grid .tsw{display:grid;grid-template-columns:repeat(3,1fr);height:36px}
+.theme-grid .tsw i{display:block}
+
 @media (prefers-reduced-motion:no-preference){.sheet{animation:up .16s ease-out}@keyframes up{from{transform:translateY(14px);opacity:.7}}}
 </style>
 </head>
@@ -258,8 +380,13 @@ details.more>.in{padding:0 14px 14px;display:grid;gap:12px}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <filter id="fuzz" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="7"/></filter>
 <filter id="soft"><feGaussianBlur stdDeviation="0.6"/></filter>
+<filter id="wob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+<filter id="wobB" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="6"/></filter>
+<filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.2  0 0 0 0.55 0"/></filter>
+<pattern id="knit" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 0 Q2.5 6 5 10 M10 0 Q7.5 6 5 10" fill="none" stroke="rgba(0,0,0,.16)" stroke-width="1.6"/><path d="M1 0 Q3 5 5 8 M9 0 Q7 5 5 8" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1"/></pattern>
 <pattern id="dots" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1.05" fill="rgba(255,255,255,.45)"/></pattern>
 </defs></svg>
+<svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#grainF)"/></svg>
 <div class="wrap">
   <header class="top"><h1 id="ttl">Шкаф</h1><span class="cnt" id="cnt" hidden></span><button class="menu-btn" id="menuBtn" aria-label="Меню">⋯</button></header>
   <main id="main"><div class="empty"><p>Открываю твои записи…</p></div></main>
@@ -290,7 +417,7 @@ const plural = (n, a, b, c) => { n = Math.abs(n) % 100; const n1 = n % 10; if (n
 // ================= dictionaries =================
 const STATUS = {plan:'В планах', wip:'Вяжу', frozen:'На паузе', done:'Готово'};
 const GROUPS = {wool:'Шерсть', cotton:'Хлопок', other:'Остальное'};
-const GROUP_COL = {wool:'#B5552B', cotton:'#FFC93C', other:'#1F4FD8'};
+const GROUP_COL = {get wool(){return TH().c[0]}, get cotton(){return TH().c[2]}, get other(){return TH().c[1]}};
 function autoGroup(y){ const c = String(y?.composition||'').toLowerCase(); if (/шерст|мерин|альпак|мохер|кашемир|ангор|верблюж|wool|merino|alpaca|mohair|cashmere|angora/.test(c)) return 'wool'; if (/хлоп|(^|[^а-яё])л[её]н|льн|бамбук|вискоз|cotton|linen|bamboo|viscose/.test(c)) return 'cotton'; return 'other'; }
 const yarnGroup = y => GROUPS[y?.group] ? y.group : autoGroup(y);
 const STAGES = {knit:'Вязание', join:'Связывание', edge:'Обвязка', block:'ВТО', assembly:'Сборка', other:'Другое'};
@@ -333,24 +460,49 @@ function icon(k, fg, bg){
 }
 const LIGHT = c => { const h = String(c||'').replace('#',''); if (h.length!==6) return false; const n=parseInt(h,16); const r=n>>16,g=n>>8&255,b=n&255; return (r*299+g*587+b*114)/1000 > 165; };
 const DEFAULT_CATS = [
- {id:'snow',name:'Снежинки',icon:'snow',color:'#1F4FD8'},
- {id:'hat',name:'Шапки',icon:'hat',color:'#FF5A36'},
- {id:'scarf',name:'Шарфы',icon:'scarf',color:'#FFC93C'},
- {id:'mit',name:'Варежки',icon:'mit',color:'#2E9E5B'},
- {id:'mitts',name:'Митенки',icon:'mitts',color:'#E7A1B0'},
- {id:'sock',name:'Носки',icon:'sock',color:'#5B6B8C'},
- {id:'card',name:'Кардиганы',icon:'card',color:'#111111'},
- {id:'vest',name:'Жилетки',icon:'vest',color:'#FF5A36'},
- {id:'bag',name:'Сумки',icon:'bag',color:'#2E9E5B'},
- {id:'shawl',name:'Шали и платки',icon:'shawl',color:'#E7A1B0'},
- {id:'plaid',name:'Пледы',icon:'plaid',color:'#FFC93C'},
- {id:'cat',name:'Для котика',icon:'cat',color:'#5B6B8C'},
- {id:'other',name:'Другое',icon:'star',color:'#1F4FD8'}
+ {id:'snow',name:'Снежинки',icon:'snow',slot:1},
+ {id:'hat',name:'Шапки',icon:'hat',slot:0},
+ {id:'scarf',name:'Шарфы',icon:'scarf',slot:2},
+ {id:'mit',name:'Варежки',icon:'mit',slot:3},
+ {id:'mitts',name:'Митенки',icon:'mitts',slot:4},
+ {id:'sock',name:'Носки',icon:'sock',slot:5},
+ {id:'card',name:'Кардиганы',icon:'card',slot:3},
+ {id:'vest',name:'Жилетки',icon:'vest',slot:5},
+ {id:'bag',name:'Сумки',icon:'bag',slot:0},
+ {id:'shawl',name:'Шали и платки',icon:'shawl',slot:1},
+ {id:'plaid',name:'Пледы',icon:'plaid',slot:2},
+ {id:'cat',name:'Для котика',icon:'cat',slot:4},
+ {id:'other',name:'Другое',icon:'star',slot:5}
 ];
 const ICON_LIB = ['heart','star','flower','cup','tree','ball','snow','hat','scarf','mit','mitts','sock','card','vest','bag','shawl','plaid','cat'];
-const PALETTE = ['#FF5A36','#FFC93C','#1F4FD8','#2E9E5B','#111111','#5B6B8C','#E7A1B0','#B5552B'];
-function allCats(){ const custom = (MEM.meta.get('cats')?.list) || []; const base = DEFAULT_CATS.filter(c=>c.id!=='other'); return [...base, ...custom, DEFAULT_CATS.find(c=>c.id==='other')]; }
-const catInfo = id => allCats().find(c=>c.id===id) || DEFAULT_CATS.find(c=>c.id==='other');
+const THEMES = [
+ {id:'olive',n:'Олива и лаванда',c:['#6B6B2F','#B7A6E0','#F2B38E','#8E7CC3','#EDE6D3','#3A3530'],bg:'#F5F3EE',ink:'#2B2925'},
+ {id:'choco',n:'Шоколад и небо',c:['#4A2C2A','#9CC5E3','#E7B98C','#F2C4CE','#EFE6D6','#6E8FB0'],bg:'#F6F2EC',ink:'#2E1D1B'},
+ {id:'cherry',n:'Вишня и мята',c:['#8E1F3A','#A8E0CF','#F6D7DD','#2B2B2B','#EFE8DC','#5DAF98'],bg:'#F7F4F1',ink:'#2B1E22'},
+ {id:'mustard',n:'Горчица и слива',c:['#D9A21B','#5B2A4A','#E9C7C0','#2F4A3A','#F3EDE2','#B9789A'],bg:'#F6F2EA',ink:'#2A1F26'},
+ {id:'bottle',n:'Бутылка и бабл-гам',c:['#1E4D3A','#F2A7C3','#F5E9D7','#C7533B','#9DB5D1','#6E9C82'],bg:'#F6F3EF',ink:'#1C2622'},
+ {id:'sky',n:'Небо и рыжий',c:['#E2702F','#7FB3E0','#F6E8C9','#2E3A59','#C9D7A6','#F0A98A'],bg:'#F5F4F0',ink:'#1F2638'},
+ {id:'matcha',n:'Матча и клубника',c:['#E7546B','#A7B86A','#F7E9E1','#3D2E2A','#F2C7A0','#6F8A3E'],bg:'#F7F4EF',ink:'#2A221F'},
+ {id:'cobalt',n:'Кобальт и корица',c:['#2E4FA8','#7B4B2A','#E9D8BF','#F0B6A8','#CBB86A','#9AAFE0'],bg:'#F5F2EC',ink:'#1E2235'},
+ {id:'lav',n:'Лаванда и терракота',c:['#C1583A','#A895D1','#F1E4D6','#3F3352','#E8B4A0','#7FA39A'],bg:'#F6F3F2',ink:'#2A2333'}
+];
+const mixHex = (a,b,t) => { const p=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; const A=p(a),B=p(b); return '#'+A.map((v,i)=>Math.round(v*(1-t)+B[i]*t).toString(16).padStart(2,'0')).join(''); };
+function themeSettings(){ return MEM.meta.get('settings') || {}; }
+function TH(){ const st = themeSettings(); let id = st.theme || 'olive'; if (st.surprise){ const wk = Math.floor(Date.now()/(7*864e5)); id = THEMES[wk % THEMES.length].id; } return THEMES.find(t=>t.id===id) || THEMES[0]; }
+const fgOn = c => LIGHT(c) ? TH().ink : '#FFFFFF';
+function applyTheme(){
+  const T = TH(); const r = document.documentElement.style; const set = (k,v) => r.setProperty(k,v);
+  set('--bg',T.bg); set('--ink',T.ink); set('--surface','#FFFEFB'); set('--mut',mixHex(T.ink,T.bg,.48)); set('--line',mixHex(T.ink,T.bg,.84)); set('--soft',mixHex(T.ink,T.bg,.91));
+  set('--acc',T.c[0]); set('--acc-ink',fgOn(T.c[0])); set('--red',T.c[0]); set('--on-red',fgOn(T.c[0]));
+  set('--blue',T.c[1]); set('--on-blue',fgOn(T.c[1])); set('--yel',T.c[2]); set('--on-yel',fgOn(T.c[2])); set('--grn',T.c[3]); set('--on-grn',fgOn(T.c[3])); set('--pink',T.c[4]); set('--slate',T.c[5]);
+  set('--tape', T.c[1] + '70');
+  document.querySelectorAll('meta[name=theme-color]').forEach(m=>m.setAttribute('content', T.bg));
+}
+function patchBg(bg){ let p=''; for (let k=0;k<26;k++){ const t=(3+k*3.6).toFixed(1); p += `M${t} 1v5M${t} 94v5M1 ${t}h5M94 ${t}h5`; } const d = shade(bg,-.35);
+  return `<svg class="pbg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="3" y="3" width="94" height="94" fill="${bg}" filter="url(#wobB)"/><rect x="3" y="3" width="94" height="94" fill="url(#knit)" filter="url(#wobB)"/><rect x="10" y="10" width="80" height="80" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-dasharray="4 3" filter="url(#wob)"/><path d="${p}" stroke="${d}" stroke-width="1.6" filter="url(#wob)"/><rect x="3" y="3" width="94" height="94" fill="none" stroke="${d}" stroke-width="2" filter="url(#wobB)"/></svg>`; }
+const patchInner = ci => `${patchBg(ci.color)}<span class="pic">${icon(ci.icon, fgOn(ci.color), ci.color)}</span>`;
+function allCats(){ const T = TH(); const custom = (MEM.meta.get('cats')?.list) || []; const tint = c => ({...c, color:T.c[c.slot]}); const base = DEFAULT_CATS.filter(c=>c.id!=='other').map(tint); return [...base, ...custom, tint(DEFAULT_CATS.find(c=>c.id==='other'))]; }
+const catInfo = id => allCats().find(c=>c.id===id) || allCats().at(-1);
 function catOf(p){
   if (p.category && allCats().some(c=>c.id===p.category)) return p.category;
   const k = String(p.kind||p.title||'').toLowerCase();
@@ -359,7 +511,7 @@ function catOf(p){
   if (p.type==='motif') return 'snow';
   return 'other';
 }
-const catTile = (id, size) => { const c = catInfo(id); const fg = LIGHT(c.color) ? '#111' : '#fff'; return {bg:c.color, fg, svg:icon(c.icon, fg, c.color)}; };
+const catTile = (id) => { const c = catInfo(id); const fg = fgOn(c.color); return {bg:c.color, fg, svg:icon(c.icon, fg, c.color)}; };
 
 // ================= yarn ball (procedural SVG) =================
 const shade=(hex,f)=>{ const n=parseInt(String(hex||'#999999').slice(1),16); let r=n>>16,g=n>>8&255,b=n&255; const t=f<0?0:255,p=Math.abs(f); r=Math.round((t-r)*p+r); g=Math.round((t-g)*p+g); b=Math.round((t-b)*p+b); return `rgb(${r},${g},${b})`; };
@@ -541,7 +693,7 @@ document.addEventListener('click', e => { const t = e.target.closest('[data-tab]
 
 // ---- Шкаф
 function viewShelf(){
-  if (!S.yarns.length) return `<div class="empty">${ballSVG('wool',['#FF5A36']).replace('<svg','<svg style="width:90px;height:90px;overflow:visible"')}<h2>Шкаф пока пуст</h2><p>Сфоткай моток — и он появится на полке. Название и состав можно дописать потом, а можно и не дописывать.</p><button class="btn red" data-quick-yarn>Сфоткать пряжу</button></div>`;
+  if (!S.yarns.length) return `<div class="empty">${ballSVG('wool',[TH().c[0]]).replace('<svg','<svg style="width:90px;height:90px;overflow:visible"')}<h2>Шкаф пока пуст</h2><p>Сфоткай моток — и он появится на полке. Название и состав можно дописать потом, а можно и не дописывать.</p><button class="btn red" data-quick-yarn>Сфоткать пряжу</button></div>`;
   const all = S.yarns.map(y=>({y, b:yarnBalance(y)})).sort((a,b)=> (a.y.createdAt||0)-(b.y.createdAt||0));
   let h = '';
   for (const g of Object.keys(GROUPS)){
@@ -561,7 +713,7 @@ function viewShelf(){
 }
 function ballBtn({y,b}){
   const resv = b.where.find(w=>w.p.status!=='done');
-  const tag = resv ? (() => { const ci = catInfo(catOf(resv.p)); return `<span class="tag" title="Отложено">${icon(ci.icon,'#fff','#111')}</span>`; })() : '';
+  const tag = resv ? (() => { const ci = catInfo(catOf(resv.p)); return `<span class="tag" title="Отложено">${icon(ci.icon,fgOn(TH().c[0]),TH().c[0])}</span>`; })() : '';
   const q = b.shelf<=0 ? '0' : b.reserved>0 ? (b.free>0 ? `×${fmtN(b.free)}` : 'отложено') : `×${fmtN(b.shelf)}`;
   return `<button class="yb ${b.free<=0 && b.shelf>0 ? 'out' : (b.shelf<=0 ? 'out':'')}" data-view-yarn="${y.id}" aria-label="${esc(y.name||'Пряжа')}">${tag}${yarnBall(y)}<span class="q">${q}</span></button>`;
 }
@@ -581,8 +733,8 @@ function basketCard(p){
   const ci = catInfo(catOf(p)); const c = cover(p); const st = basketState(p);
   const ys = (p.yarns||[]).map(a=>yarnById(a.yarnId)).filter(Boolean).slice(0,4);
   const gift = (p.gifts||[]).map(g=>personById(g.personId)?.name).filter(Boolean)[0];
-  const fg = LIGHT(ci.color)?'#111':'#fff';
-  return `<button class="bk" data-view-project="${p.id}">${gift?`<span class="bow">подарок · ${esc(gift)}</span>`:''}<div class="ref" style="background:${ci.color}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:icon(ci.icon,fg,ci.color)}</div>
+  const fg = fgOn(ci.color);
+  return `<button class="bk" data-view-project="${p.id}">${gift?`<span class="bow">подарок · ${esc(gift)}</span>`:''}<div class="ref ${c?'':'patchy'}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:patchInner(ci)}</div>
     <div class="basket">${ys.map((y,i)=>`<span class="mini" style="left:${18+i*26}px">${yarnBall(y)}</span>`).join('')}<div class="bb"></div></div>
     <div class="t"><b>${esc(p.title||ci.name)}</b><span class="${st.cls}">${st.t}</span></div></button>`;
 }
@@ -606,8 +758,8 @@ function viewNow(){
   return h;
 }
 function wipCard(p){
-  const ci = catInfo(catOf(p)); const c = cover(p); const pr = progressOf(p); const fg = LIGHT(ci.color)?'#111':'#fff';
-  return `<div class="wc"><button class="im" style="background:${ci.color}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:icon(ci.icon,fg,ci.color)}</button>
+  const ci = catInfo(catOf(p)); const c = cover(p); const pr = progressOf(p); const fg = fgOn(ci.color);
+  return `<div class="wc"><button class="im ${c?'':'patchy'}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:patchInner(ci)}</button>
    <button class="mid" data-view-project="${p.id}"><b>${esc(p.title||ci.name)}</b>${pr!=null?`<div class="bar"><i style="width:${Math.round(pr*100)}%"></i></div>`:''}<span class="meta">${progressText(p)?`<span>${progressText(p)}</span>`:''}<span>${fmtH(totalMin(p))}</span>${hooksOf(p).length?`<span>крючок ${esc(hooksOf(p).join(' / '))}</span>`:''}</span></button>
    <button class="tbtn ${p.timer?'on':''}" data-qt="${p.id}" aria-label="${p.timer?'Остановить таймер':'Запустить таймер'}">${p.timer?`<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg><span class="tick" data-tick="${p.timer.startedAt}"></span>`:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"/></svg>старт`}</button></div>`;
 }
@@ -660,9 +812,11 @@ function viewDone(){
   return h;
 }
 function doneTile(p){
-  const t = catTile(catOf(p)); const c = cover(p);
-  return `<button class="tl" style="background:${t.bg}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:t.svg}<em>${esc(p.title||catInfo(catOf(p)).name)}${num(p.copies)>1?` ×${num(p.copies)}`:''}</em></button>`;
+  const ci = catInfo(catOf(p)); const c = cover(p); const name = esc(p.title||ci.name) + (num(p.copies)>1?` ×${num(p.copies)}`:'');
+  return c ? `<button class="tl pol" data-view-project="${p.id}"><span class="pim"><img src="${img(c)}" alt="" loading="lazy"></span><em>${name}</em></button>`
+           : `<button class="tl patchy" data-view-project="${p.id}" style="color:${fgOn(ci.color)}">${patchInner(ci)}<em>${name}</em></button>`;
 }
+
 
 // ---- list interactions
 async function quickTimer(id){
@@ -773,7 +927,7 @@ function yarnView(id){
   const used = b.where.map(w=>w.p);
   return head(y.name || 'Пряжа', `<button class="btn line sm" data-edit-yarn="${y.id}">Изменить</button>`) + `<div class="sh-body flush">
     ${heroBlock}
-    <div class="ttl" style="margin-top:6px"><h3>${esc(y.name || 'Без названия')}</h3><span class="pill" style="background:${GROUP_COL[g]};color:${LIGHT(GROUP_COL[g])?'#111':'#fff'}">${GROUPS[g]}</span></div>
+    <div class="ttl" style="margin-top:6px"><h3>${esc(y.name || 'Без названия')}</h3><span class="pill" style="background:${GROUP_COL[g]};color:${fgOn(GROUP_COL[g])}">${GROUPS[g]}</span></div>
     ${!y.name ? `<div class="hint">Можно дописать название, состав и цену — кнопка «Изменить». А можно и так оставить.</div>` : ''}
     <div class="cdots">${cols.map(c=>`<i style="background:${c}"></i>`).join('')}<span class="hint">${cols.length>1?'разноцветная':'однотонная'}</span></div>
     <div class="kpy">
@@ -783,7 +937,7 @@ function yarnView(id){
     </div>
     <div class="row-top"><input type="number" inputmode="decimal" id="buyN" placeholder="Сколько мотков докупила"><button class="btn sm" data-buy="${y.id}">+ докупила</button></div>
     ${facts.length || y.link ? `<div class="facts">${facts.map(f=>`<span>${f}</span>`).join('')}${y.link?`<a href="${esc(y.link)}" target="_blank" rel="noopener">товар ↗</a>`:''}</div>` : ''}
-    ${used.length ? `<div class="h3" style="margin:6px 0 0">Из неё</div><div class="ptiles">${used.map(p=>{ const t=catTile(catOf(p)); const c=cover(p); return `<button class="tl" style="background:${t.bg}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:t.svg}<em>${esc(STATUS[p.status])}</em></button>`; }).join('')}</div>` : ''}
+    ${used.length ? `<div class="h3" style="margin:6px 0 0">Из неё</div><div class="ptiles">${used.map(doneTile).join('')}</div>` : ''}
     ${sib.length ? `<div class="h3" style="margin:6px 0 0">Другие цвета этой пряжи</div><div class="yrow">${sib.map(z=>`<button data-view-yarn="${z.id}">${yarnBall(z)}<em>×${fmtN(Math.max(0,yarnBalance(z).shelf))}</em></button>`).join('')}</div>` : ''}
     ${y.notes ? `<div class="blk"><div class="blk-h"><b>Заметки</b></div><div style="white-space:pre-wrap">${esc(y.notes)}</div></div>` : ''}
   </div>`;
@@ -793,11 +947,11 @@ function yarnView(id){
 function projectView(id){
   const p = projById(id);
   if (!p) return head('Изделие') + `<div class="sh-body"><div class="empty"><p>Этого изделия больше нет.</p></div></div>`;
-  const ci = catInfo(catOf(p)); const fg = LIGHT(ci.color)?'#111':'#fff';
+  const ci = catInfo(catOf(p)); const fg = fgOn(ci.color);
   const slides = [...(p.photos||[]).map(x=>({id:x,l:''})), ...(p.patternImgs||[]).map(x=>({id:x,l:'схема'})), ...(p.refImgs||[]).map(x=>({id:x,l:'референс'}))];
   const gal = slides.length
     ? `<div class="gal-wrap"><div class="gal">${slides.map(s=>`<button class="sl" data-lb="${s.id}" aria-label="Открыть фото"><img src="${img(s.id)}" alt="" loading="lazy">${s.l?`<span class="gal-lab">${s.l}</span>`:''}</button>`).join('')}</div>${slides.length>1?`<div class="dots">${slides.map(()=>'<b></b>').join('')}</div>`:''}</div>`
-    : `<div class="gal" style="background:${ci.color}"><div class="sl">${icon(ci.icon,fg,ci.color)}</div></div>`;
+    : `<div class="gal nophoto"><div class="sl patchy">${patchInner(ci)}</div></div>`;
   const ys = (p.yarns||[]).filter(a=>yarnById(a.yarnId));
   const hooks = hooksOf(p); const tm = totalMin(p); const cost = projCost(p); const sk = projSkeins(p);
   const gifts = (p.gifts||[]).map(g=>personById(g.personId)?.name).filter(Boolean);
@@ -851,12 +1005,16 @@ function projectView(id){
 }
 
 // ================= menu =================
-const MENU = {icon:'heart', color:'#FF5A36'};
+const MENU = {icon:'heart', color:''};
 function menuView(){
+  if (!MENU.color || !TH().c.includes(MENU.color)) MENU.color = TH().c[0];
+  const st = themeSettings();
   const lb = lastBackup(); const days = lb ? Math.floor((Date.now()-lb)/864e5) : null; const stale = (!lb || days>=14) && (S.projects.length || S.yarns.length);
   const custom = (MEM.meta.get('cats')?.list)||[];
   const gifts = {}; S.projects.forEach(p=>(p.gifts||[]).forEach(g=>{ if(!g.personId) return; (gifts[g.personId] ||= []).push({p, qty:Math.max(1,num(g.qty)||1)}); }));
   return head('Меню') + `<div class="sh-body">
+   <section class="sec"><h4>Цвета</h4><div class="theme-grid">${THEMES.map(t=>`<button data-theme="${t.id}" aria-pressed="${!st.surprise && TH().id===t.id}"><span class="tsw">${t.c.map(x=>`<i style="background:${x}"></i>`).join('')}</span>${esc(t.n)}</button>`).join('')}</div>
+     <label class="check"><input type="checkbox" data-surprise ${st.surprise?'checked':''}> Сюрприз: каждую неделю новая палитра</label></section>
    <section class="sec"><h4>Резервная копия</h4><div class="hint ${stale?'bad':''}">${lb ? `Последняя копия: ${days===0?'сегодня':days+' дн. назад'}.` : 'Копию ещё не делала.'} Всё хранится только на этом телефоне — сохраняй копию раз в пару недель в облако или мессенджер.</div>
      <div class="grid2f"><button class="btn" data-backup>Сохранить копию</button><label class="btn line">Восстановить<input type="file" accept="application/json,.json" data-restore hidden></label></div><div id="restoreSlot"></div></section>
    <section class="sec"><h4>Идеи по доработке</h4><div class="hint">Записывай, что хочется поменять, — потом принесёшь списком.</div>
@@ -865,8 +1023,8 @@ function menuView(){
    <section class="sec"><h4>Свои категории</h4>
      ${custom.length?`<div class="chips" style="flex-wrap:wrap">${custom.map(c=>`<span class="chip">${icon(c.icon,c.color,'var(--surface)')}${esc(c.name)}<button class="x" style="width:24px;height:24px;font-size:18px" data-cat-del="${c.id}" aria-label="Удалить">×</button></span>`).join('')}</div>`:''}
      <input type="text" id="catName" placeholder="Название, например «Подставки»">
-     <div class="catgrid" style="grid-template-columns:repeat(6,1fr)">${ICON_LIB.map(k=>`<button data-pick-icon="${k}" aria-pressed="${MENU.icon===k}" style="background:${MENU.color}">${icon(k, LIGHT(MENU.color)?'#111':'#fff', MENU.color)}</button>`).join('')}</div>
-     <div class="seg">${PALETTE.map(c=>`<button data-pick-color="${c}" aria-pressed="${MENU.color===c}" style="background:${c};width:38px;height:34px" aria-label="Цвет"></button>`).join('')}</div>
+     <div class="catgrid" style="grid-template-columns:repeat(6,1fr)">${ICON_LIB.map(k=>`<button data-pick-icon="${k}" aria-pressed="${MENU.icon===k}" style="background:${MENU.color}">${icon(k, fgOn(MENU.color), MENU.color)}</button>`).join('')}</div>
+     <div class="seg">${TH().c.map(c=>`<button data-pick-color="${c}" aria-pressed="${MENU.color===c}" style="background:${c};width:38px;height:34px" aria-label="Цвет"></button>`).join('')}</div>
      <button class="btn" data-cat-add>Добавить категорию</button></section>
    <section class="sec"><h4>Кому дарю</h4>
      ${S.people.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ru')).map(pr=>{ const g=gifts[pr.id]||[]; const n=g.reduce((s,x)=>s+x.qty,0); return `<div class="row"><div class="row-top"><b>${esc(pr.name)}</b><span class="hint">${n?n+' шт.':'пока ничего'}</span><button class="x" data-person-del="${pr.id}" aria-label="Удалить">×</button></div>${g.length?`<div class="hint">${g.map(x=>esc(x.p.title||catInfo(catOf(x.p)).name)+(x.qty>1?' ×'+x.qty:'')).join(', ')}</div>`:''}<div data-confirm-slot="${pr.id}"></div></div>`; }).join('')}
@@ -922,7 +1080,7 @@ function projectForm(){
   const parts = F.parts||[];
   return head(F.title || ci.name, `<span class="save-st" id="saveSt">Сохранено</span>`) + `<div class="sh-body">
     <section class="sec">
-      <div class="field"><span>Что это</span><div class="catgrid">${allCats().map(c=>{ const fg=LIGHT(c.color)?'#111':'#fff'; return `<button type="button" data-set="category" data-val="${c.id}" aria-pressed="${F.category===c.id}" style="background:${c.color};color:${fg}">${icon(c.icon,fg,c.color)}<span>${esc(c.name)}</span></button>`; }).join('')}</div></div>
+      <div class="field"><span>Что это</span><div class="catgrid">${allCats().map(c=>{ const fg=fgOn(c.color); return `<button type="button" data-set="category" data-val="${c.id}" aria-pressed="${F.category===c.id}" style="background:${c.color};color:${fg}">${icon(c.icon,fg,c.color)}<span>${esc(c.name)}</span></button>`; }).join('')}</div></div>
       <label class="field"><span>Название (можно не писать)</span><input type="text" id="f-title" data-f="title" value="${esc(F.title)}" placeholder="${esc(ci.name)}"></label>
       <div class="field"><span>Статус</span>${seg('status', STATUS, F.status)}</div>
       <div class="field"><span>Как считать прогресс</span>${seg('type', PROG, F.type||'regular')}</div>
@@ -1002,7 +1160,7 @@ function quickView(q){
     <button class="btn red wide" data-qk-kind="yarn">Это пряжа — в шкаф</button><button class="btn wide" data-qk-kind="project">Это изделие или идея</button></div>`;
   return head(T[q.status]||'Новое') + `<div class="sh-body">
     <div class="field"><span>Статус</span>${seg('qstatus', STATUS, q.status)}</div>
-    <div class="field"><span>Что это</span><div class="catgrid">${allCats().map(c=>{ const fg=LIGHT(c.color)?'#111':'#fff'; return `<button type="button" data-qk-cat="${c.id}" aria-pressed="${q.category===c.id}" style="background:${c.color};color:${fg}">${icon(c.icon,fg,c.color)}<span>${esc(c.name)}</span></button>`; }).join('')}</div></div>
+    <div class="field"><span>Что это</span><div class="catgrid">${allCats().map(c=>{ const fg=fgOn(c.color); return `<button type="button" data-qk-cat="${c.id}" aria-pressed="${q.category===c.id}" style="background:${c.color};color:${fg}">${icon(c.icon,fg,c.color)}<span>${esc(c.name)}</span></button>`; }).join('')}</div></div>
     <div class="field"><span>${q.status==='plan'?'Референсы и схема':'Фото'}</span><div class="imgs">${q.files.map(f=>`<div class="im"><img src="${img(f.id)}" alt=""></div>`).join('')}<label class="add-img"><input type="file" accept="image/*" multiple data-qk-photo hidden><span><b>+</b>${q.busy?'загружаю…':'галерея, скрины, камера'}</span></label></div></div>
     <label class="field"><span>Название (можно не писать)</span><input type="text" id="qkTitle" value="${esc(q.title)}" placeholder="${q.category?esc(catInfo(q.category).name):'Например: шарф для мамы'}"></label>
     <button class="btn red wide" data-qk-save ${q.busy?'disabled':''}>Готово</button>
@@ -1041,6 +1199,7 @@ sheet.addEventListener('change', async e => {
   if (el.dataset.newyarn!=null){ const files=[...el.files]; el.value=''; const ed = ED; const ids = await addYarnsFromFiles(files, {qty:1}); if (!ids.length || ED!==ed) return; ids.forEach(id=>ed.form.yarns.push({yarnId:id, skeins:1})); ed.saver.schedule(); setTimeout(rerenderEditor, 50); toast('Пряжа в шкафу и в изделии'); return; }
   if (el.dataset.addcolor!=null && ED){ const F=ED.form; if (F.multi) F.colors=[...(F.colors||[]), el.value].slice(0,6); else F.colors=[el.value, ...(F.colors||[]).slice(1)]; F.color=F.colors[0]; ED.saver.schedule(); rerenderEditor(); return; }
   if (el.dataset.qkPhoto!=null){ const files=[...el.files]; el.value=''; quickAddBlobs(files); return; }
+  if (el.dataset.surprise!=null){ await db.collection('meta').doc('settings').set({...themeSettings(), surprise:el.checked}); return; }
   if (el.dataset.restore!=null){ if (!el.files[0]) return; PENDING_RESTORE = el.files[0]; el.value=''; $('#restoreSlot').innerHTML = `<div class="confirm"><span>Заменить все записи и фото данными из «${esc(PENDING_RESTORE.name)}»? То, что сейчас в приложении, пропадёт.</span><div class="grid2f"><button class="btn danger sm" data-restore-yes>Заменить</button><button class="btn line sm" data-restore-no>Отмена</button></div></div>`; return; }
 });
 async function handleFiles(input){
@@ -1087,6 +1246,7 @@ sheet.addEventListener('click', async e => {
   }
   // ---- menu
   if (fr.t==='view' && fr.kind==='menu'){
+    if (t.dataset.theme){ await db.collection('meta').doc('settings').set({...themeSettings(), theme:t.dataset.theme, surprise:false}); toast('Перекрасила'); return; }
     if (t.dataset.backup!=null){ makeBackup(); return; }
     if (t.dataset.restoreNo!=null){ $('#restoreSlot').innerHTML=''; PENDING_RESTORE=null; return; }
     if (t.dataset.restoreYes!=null && PENDING_RESTORE){ const f=PENDING_RESTORE; PENDING_RESTORE=null; await restoreBackup(f); drawTop(false); return; }
@@ -1190,6 +1350,7 @@ async function readShared(){
     if (blobs.length) openQuick('plan', {askKind:true, blobs});
   }catch(e){}
 }
+applyTheme();
 render();
 (async () => {
   try{
@@ -1198,7 +1359,7 @@ render();
     for (const d of await LS.allDocs()) if (MEM[d.coll]) MEM[d.coll].set(d.id, d.data);
     for (const c of ['projects','yarns','people','shop','ideas','meta']){
       db.collection(c).onSnapshot(snap => {
-        if (c!=='meta') S[c] = snap.docs.map(d => ({id:d.id, ...d.data()}));
+        if (c!=='meta') S[c] = snap.docs.map(d => ({id:d.id, ...d.data()})); else applyTheme();
         S.loaded = true;
         if (ED && ED.kind==='project') updateHints();
         render(); redrawIfView();
