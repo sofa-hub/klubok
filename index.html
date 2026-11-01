@@ -3,730 +3,421 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F2F1F5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#15141A" media="(prefers-color-scheme: dark)">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F4F3EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Клубок">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>Мой клубок</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Golos+Text:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700&display=swap">
 <style>
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-body{margin:0;font-size:14px}
-img{max-width:100%}
-[hidden]{display:none!important}
-/* Layout: one phone column, sticky top bar, fixed bottom tab bar, full-screen sheets for editing */
+/* Layout: phone column; sticky title; fixed 4-tab bar; full-screen sheets stack (view → edit) */
 :root{
-  --bg:#F2F1F5; --surface:#FFFFFF; --surface2:#E9E7EE; --ink:#1E1C26; --muted:#6C6878;
-  --line:#DCD9E3; --accent:#8C3E6E; --accent-ink:#FFFFFF; --accent-soft:#F3E3EC;
-  --moss:#4F7340; --moss-soft:#E4EEDD; --sky:#3E6488; --sky-soft:#E0E9F2; --warn:#B4541E; --warn-soft:#F8E6DA;
-  --f-display:"Nunito","Trebuchet MS",sans-serif; --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --r:14px;
+  --bg:#F4F3EF; --surface:#FFFFFF; --ink:#111111; --mut:#8A877F; --line:#E2E0D8; --soft:#ECEAE3;
+  --red:#FF5A36; --yel:#FFC93C; --blue:#1F4FD8; --grn:#2E9E5B; --slate:#5B6B8C; --pink:#E7A1B0;
+  --on-red:#FFFFFF; --warn:#E5482A; --ok:#22894E;
+  --f-d:"Unbounded","Arial Black",system-ui,sans-serif; --f-b:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#15141A; --surface:#1F1D26; --surface2:#2A2833; --ink:#EEECF3; --muted:#A29EAE;
-  --line:#34313E; --accent:#E08BBE; --accent-ink:#22101B; --accent-soft:#3A2232;
-  --moss:#9CC487; --moss-soft:#24301F; --sky:#8DB4D9; --sky-soft:#1D2A37; --warn:#F0A372; --warn-soft:#3A2618; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#15141A; --surface:#1F1D26; --surface2:#2A2833; --ink:#EEECF3; --muted:#A29EAE;
-  --line:#34313E; --accent:#E08BBE; --accent-ink:#22101B; --accent-soft:#3A2232;
-  --moss:#9CC487; --moss-soft:#24301F; --sky:#8DB4D9; --sky-soft:#1D2A37; --warn:#F0A372; --warn-soft:#3A2618; color-scheme:dark}
+  --bg:#141414; --surface:#1D1D1D; --ink:#F2F1EC; --mut:#9A978F; --line:#333331; --soft:#262624;
+  --blue:#4A74F0; --slate:#7D8DB0; --warn:#FF7A5C; --ok:#4CC27E; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141414; --surface:#1D1D1D; --ink:#F2F1EC; --mut:#9A978F; --line:#333331; --soft:#262624; --blue:#4A74F0; --slate:#7D8DB0; --warn:#FF7A5C; --ok:#4CC27E; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{background:var(--bg);color:var(--ink)}
-body{font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:var(--f-b);font-size:15px;line-height:1.4;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+img{max-width:100%}
+[hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(96px + env(safe-area-inset-bottom,0px))}
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:14px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-h1{font-family:var(--f-display);font-weight:700;font-size:24px;margin:0;letter-spacing:-.01em;text-wrap:balance}
-h2{font-family:var(--f-display);font-size:17px;margin:0;font-weight:700}
-.muted{color:var(--muted)}
-.small{font-size:13px}
-.btn{border:0;border-radius:999px;padding:10px 16px;background:var(--accent);color:var(--accent-ink);font-weight:600;display:inline-flex;align-items:center;gap:6px;min-height:42px}
-.btn.ghost{background:var(--surface2);color:var(--ink)}
-.btn.line{background:transparent;border:1px solid var(--line);color:var(--ink)}
-.btn.danger{background:var(--warn-soft);color:var(--warn)}
-.btn.sm{padding:6px 12px;min-height:34px;font-size:14px}
-.icon-btn{border:0;background:var(--surface2);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
-.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;white-space:nowrap;font-size:14px}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.list{display:grid;gap:10px}
-.card{background:var(--surface);border-radius:var(--r);padding:12px;display:flex;gap:12px;align-items:center;border:0;text-align:left;width:100%}
-.thumb{width:68px;height:68px;border-radius:12px;background:var(--surface2);flex:none;object-fit:cover;display:grid;place-items:center;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.card-body{min-width:0;flex:1;display:grid;gap:3px}
-.card-title{font-weight:600;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.meta{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px}
-.st-wip{background:var(--accent-soft);color:var(--accent)}
-.st-plan{background:var(--sky-soft);color:var(--sky)}
-.st-done{background:var(--moss-soft);color:var(--moss)}
-.st-frozen{background:var(--surface2);color:var(--muted)}
-.tick-badge{color:var(--accent);font-weight:600}
-.empty{background:var(--surface);border-radius:var(--r);padding:24px 18px;text-align:center;display:grid;gap:10px;justify-items:center}
-.empty p{margin:0;max-width:34ch}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-nav.tabs button{border:0;background:none;padding:9px 4px 10px;display:grid;justify-items:center;gap:2px;font-size:12px;color:var(--muted)}
-nav.tabs button svg{width:24px;height:24px}
-nav.tabs button[aria-current="page"]{color:var(--accent);font-weight:600}
-.badge-n{background:var(--accent);color:var(--accent-ink);border-radius:999px;font-size:10px;padding:0 5px;margin-left:2px}
-.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:24;width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px rgba(0,0,0,.18);display:grid;place-items:center}
-@media(min-width:672px){.fab{right:calc(50% - 304px)}}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(110px + env(safe-area-inset-bottom,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:18px 10px;display:flex;align-items:center;gap:10px}
+h1{font:800 26px/1.05 var(--f-d);margin:0;letter-spacing:-.02em;flex:1}
+.cnt{font:600 12px var(--f-b);background:var(--ink);color:var(--bg);padding:4px 9px;white-space:nowrap}
+.menu-btn{border:2px solid var(--ink);background:var(--surface);width:38px;height:38px;display:grid;place-items:center;font-weight:800;font-size:18px;line-height:1}
+.h3{font:700 11px var(--f-b);letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin:18px 0 8px}
+.h3 i{width:11px;height:11px;display:block}
+.muted{color:var(--mut)}
+.btn{border:2px solid var(--ink);background:var(--ink);color:var(--bg);padding:11px 16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px}
+.btn.line{background:var(--surface);color:var(--ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--on-red)}
+.btn.sm{padding:6px 11px;min-height:36px;font-size:14px}
+.btn.wide{width:100%}
+.btn.danger{background:transparent;border-color:var(--warn);color:var(--warn)}
+.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:2px solid var(--ink);background:var(--surface);padding:5px 10px 5px 6px;display:flex;gap:6px;align-items:center;font-size:13px;font-weight:600;white-space:nowrap;flex:none}
+.chip svg{width:22px;height:22px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chip.txt{padding:5px 11px}
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:2px solid var(--ink);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs button{border:0;background:none;padding:8px 2px 10px;display:grid;justify-items:center;gap:2px;font-size:11px;color:var(--mut)}
+nav.tabs button svg{width:28px;height:28px}
+nav.tabs button[aria-current="page"]{color:var(--ink);font-weight:700}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:24;width:60px;height:60px;border:0;background:var(--red);color:#fff;display:grid;place-items:center;box-shadow:4px 4px 0 var(--ink)}
+@media(min-width:592px){.fab{right:calc(50% - 264px)}}
+/* shelf */
+.shelf{margin-bottom:6px}
+.shelf .srow{display:grid;grid-template-columns:repeat(4,1fr);align-items:end;padding:0 4px;gap:4px}
+.board{height:10px;background:var(--ink);position:relative;margin-bottom:22px}
+.board::before,.board::after{content:"";position:absolute;top:10px;width:8px;height:12px;background:var(--ink)}
+.board::before{left:14px}.board::after{right:14px}
+.yb{border:0;background:none;padding:0 0 12px;display:grid;justify-items:center;position:relative;min-width:0}
+.yb svg{width:72px;height:72px;overflow:visible;display:block}
+.yb.out{opacity:.38}
+.yb .q{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font:700 11px var(--f-b);background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);padding:0 6px;border-radius:10px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.yb .tag{position:absolute;top:0;right:6px;width:24px;height:24px;border-radius:50%;background:var(--ink);display:grid;place-items:center}
+.yb .tag svg{width:16px;height:16px}
+.yb .nm{position:absolute;top:100%;left:0;right:0;margin-top:1px;font-size:10.5px;color:var(--mut);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{background:var(--surface);border:2px solid var(--ink);padding:24px 18px;text-align:center;display:grid;gap:12px;justify-items:center}
+.empty h2{font:800 18px var(--f-d);margin:0}
+.empty p{margin:0;max-width:32ch;color:var(--mut)}
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tl{border:0;padding:0;aspect-ratio:4/5;display:grid;place-items:center;position:relative;overflow:hidden;color:#fff;max-width:100%}
+.tl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tl svg{width:44px;height:44px}
+.tl em{position:absolute;left:0;right:0;bottom:0;font:600 11px var(--f-b);font-style:normal;padding:14px 6px 5px;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* scene */
+.scene{border:2px solid var(--ink);margin-bottom:8px;overflow:hidden}
+.scene svg{width:100%;height:auto;display:block}
+.sc{cursor:pointer}
+.sc:focus{outline:none}
+.sc.on path,.sc.on rect,.sc.on circle,.sc.on ellipse{stroke:var(--red)!important;stroke-width:4!important;stroke-dasharray:none!important}
+/* baskets */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.bk{background:var(--surface);border:2px solid var(--ink);display:flex;flex-direction:column;position:relative;padding:0;text-align:left;min-width:0}
+.bk .ref{height:104px;position:relative;overflow:hidden;display:grid;place-items:center}
+.bk .ref img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bk .ref svg{width:48px;height:48px}
+.basket{height:54px;position:relative;margin-top:-20px}
+.basket .bb{position:absolute;bottom:0;left:10px;right:10px;height:32px;background:var(--yel);clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);border-top:3px solid var(--ink)}
+.basket .bb::after{content:"";position:absolute;inset:6px 0 0;background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(0,0,0,.18) 9px 11px)}
+.basket .mini{position:absolute;bottom:18px;width:34px;height:34px}
+.basket .mini svg{width:34px;height:34px;overflow:visible}
+.bk .t{padding:8px 10px 10px;display:grid;gap:2px;min-width:0}
+.bk .t b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ok{font-size:12px;font-weight:600;color:var(--ok)}.need{font-size:12px;font-weight:600;color:var(--warn)}.nil{font-size:12px;color:var(--mut)}
+.bow{position:absolute;top:7px;right:7px;background:var(--red);color:#fff;font-size:10.5px;font-weight:700;padding:2px 7px;z-index:2}
+.bk.new{border-style:dashed;border-color:var(--mut);background:transparent;justify-content:center;align-items:center;gap:4px;color:var(--mut);font-size:13px;min-height:190px;text-align:center}
+.bk.new b{font:800 32px var(--f-d);color:var(--ink)}
+.strip{margin-top:14px;background:var(--ink);color:var(--bg);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;border:0;width:100%;text-align:left;font-weight:600}
+.strip b{background:var(--red);color:#fff;padding:3px 9px;font-size:13px;white-space:nowrap}
+/* wip cards */
+.wc{background:var(--surface);border:2px solid var(--ink);display:grid;grid-template-columns:96px 1fr auto;align-items:stretch;min-height:104px;margin-bottom:10px}
+.wc .im{position:relative;overflow:hidden;display:grid;place-items:center;border:0;padding:0}
+.wc .im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wc .im svg{width:40px;height:40px}
+.wc .mid{border:0;background:none;text-align:left;padding:10px 12px;display:grid;gap:5px;align-content:center;min-width:0}
+.wc .mid b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{height:8px;background:var(--soft);position:relative}.bar i{position:absolute;inset:0 auto 0 0;background:var(--red)}
+.meta{font-size:12.5px;color:var(--mut);font-variant-numeric:tabular-nums;display:flex;gap:10px;flex-wrap:wrap}
+.tbtn{border:0;border-left:2px solid var(--ink);background:var(--yel);color:#111;width:74px;display:grid;place-items:center;align-content:center;gap:2px;font-weight:800;font-size:12px}
+.tbtn svg{width:26px;height:26px}
+.tbtn.on{background:var(--red);color:#fff}
+.tick{font-variant-numeric:tabular-nums}
 /* sheet */
 .sheet{position:fixed;inset:0;z-index:40;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
-.sheet-head{position:sticky;top:0;z-index:2;background:var(--bg);padding-top:env(safe-area-inset-top,0px)}
-.sheet-head .in{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:10px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.sheet-head h2{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.save-st{font-size:12px;color:var(--muted);white-space:nowrap}
-.sheet-body{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:4px calc(40px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
-.sec{background:var(--surface);border-radius:var(--r);padding:14px;display:grid;gap:12px}
+.sh-head{position:sticky;top:0;z-index:3;background:var(--bg);padding-top:env(safe-area-inset-top,0px)}
+.sh-head .in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sh-head h2{flex:1;min-width:0;font:800 17px var(--f-d);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sq-btn{border:2px solid var(--ink);background:var(--surface);width:40px;height:40px;display:grid;place-items:center;flex:none;padding:0}
+.save-st{font-size:12px;color:var(--mut);white-space:nowrap}
+.sh-body{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:4px calc(40px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+.sh-body.flush{padding-top:0}
+/* view */
+.gal{position:relative;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:min(78vw,380px);background:var(--soft)}
+.gal::-webkit-scrollbar{display:none}
+.gal .sl{flex:0 0 100%;scroll-snap-align:center;position:relative;border:0;padding:0;background:none;display:grid;place-items:center}
+.gal .sl img{width:100%;height:100%;object-fit:cover}
+.gal .sl svg{width:120px;height:120px}
+.gal-wrap{position:relative}
+.dots{position:absolute;bottom:12px;left:0;right:0;display:flex;gap:6px;justify-content:center;pointer-events:none}
+.dots b{width:7px;height:7px;background:rgba(255,255,255,.6);box-shadow:0 0 0 1px rgba(0,0,0,.25)}.dots b.on{background:#fff;width:18px}
+.gal-lab{position:absolute;top:12px;left:12px;background:var(--ink);color:var(--bg);font-size:11px;font-weight:700;padding:3px 8px;pointer-events:none}
+.ttl{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.ttl h3{font:800 22px/1.15 var(--f-d);margin:0;letter-spacing:-.02em;text-wrap:balance}
+.pill{font:700 11.5px var(--f-b);padding:4px 9px;white-space:nowrap;flex:none}
+.p-plan{background:var(--blue);color:#fff}.p-wip{background:var(--yel);color:#111}.p-frozen{background:var(--soft);color:var(--mut)}.p-done{background:var(--grn);color:#fff}
+.kp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.k{border:2px solid var(--ink);background:var(--surface);padding:10px;display:grid;gap:3px;align-content:start;text-align:left;min-width:0}
+.k small{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.k.hook{background:var(--red);border-color:var(--red);color:#fff}
+.k.hook b{font:800 30px/1 var(--f-d)}
+.k.hook span{font-size:12px;opacity:.9}
+.k.sch .im{height:96px;background:var(--soft);display:grid;place-items:center;overflow:hidden;position:relative}
+.k.sch .im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.k.sch a,.k.sch .lnk{font-size:12px;color:var(--blue);font-weight:600;text-decoration:none}
+.k.wide{grid-column:1/-1}
+.yrow{display:flex;gap:12px;flex-wrap:wrap}
+.yrow button{border:0;background:none;padding:0 0 10px;position:relative;display:grid;justify-items:center}
+.yrow svg{width:56px;height:56px;overflow:visible}
+.yrow em{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font:700 10.5px var(--f-b);font-style:normal;background:var(--ink);color:var(--bg);padding:0 6px;border-radius:9px;white-space:nowrap}
+.facts{display:flex;gap:6px;flex-wrap:wrap}
+.facts span svg{width:18px;height:18px;display:block}
+.facts span{font-size:13px;background:var(--surface);border:1.5px solid var(--line);padding:5px 9px;font-variant-numeric:tabular-nums}
+.facts a{font-size:13px;border:1.5px solid var(--blue);color:var(--blue);padding:5px 9px;text-decoration:none;font-weight:600}
+.blk{background:var(--surface);border:2px solid var(--ink);padding:12px;display:grid;gap:10px}
+.blk-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.blk-h b{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.sqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(22px,1fr));gap:3px}
+.sqs button{aspect-ratio:1;border:0;padding:0;background:var(--soft)}
+.parts{display:flex;flex-wrap:wrap;gap:6px}
+.parts button{border:2px solid var(--ink);background:var(--surface);padding:7px 10px;font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center}
+.parts button.on{background:var(--ink);color:var(--bg)}
+.counter{display:flex;align-items:center;gap:12px}
+.counter b{font:800 34px var(--f-d);font-variant-numeric:tabular-nums;min-width:2ch;text-align:center}
+.counter button{width:48px;height:48px;border:2px solid var(--ink);background:var(--surface);font:800 22px var(--f-d)}
+.counter button.plus{background:var(--red);border-color:var(--red);color:#fff}
+.actions{display:grid;gap:8px}
+.big-timer{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--yel);color:#111;border:2px solid var(--ink);padding:10px 12px;font-weight:700}
+.big-timer.on{background:var(--red);color:#fff}
+.big-timer .tick{font:800 22px var(--f-d)}
+.stepper{display:flex;align-items:center;gap:4px}
+.stepper button{width:32px;height:32px;flex:none;border:2px solid var(--ink);background:var(--surface);font:800 20px var(--f-d);padding:0}
+.stepper b{font:800 24px var(--f-d);min-width:1.6ch;text-align:center;font-variant-numeric:tabular-nums}
+.kpy{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px}
+.kpy .k b{font:800 22px var(--f-d);font-variant-numeric:tabular-nums}
+.cdots{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cdots i{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);display:block}
+.hero-ball{height:260px;display:grid;place-items:center;background:var(--soft);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+.hero-ball svg{width:170px;height:170px;overflow:visible}
+.hero-photo{margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));height:min(80vw,360px);background:var(--soft);position:relative;border:0;padding:0;display:block;width:calc(100% + 2 * max(16px,env(safe-area-inset-left,0px)))}
+.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-photo .ball-badge{position:absolute;right:14px;top:14px;width:64px;height:64px}
+.hero-photo .ball-badge svg{width:64px;height:64px;overflow:visible}
+.ptiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.ptiles .tl{aspect-ratio:1}
+.ptiles .tl svg{width:30px;height:30px}
+/* edit form */
+.sec{background:var(--surface);border:2px solid var(--ink);padding:14px;display:grid;gap:12px}
 .sec-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.sec-h h2{font-size:15px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sec h4,.sec-h h4{font:800 14px var(--f-d);margin:0}
+.grid2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .field{display:grid;gap:4px;min-width:0}
-.field>span{font-size:12px;color:var(--muted);letter-spacing:.02em}
-input[type=text],input[type=number],input[type=url],input[type=date],select,textarea{width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 11px;font-size:16px}
-textarea{min-height:76px;resize:vertical}
-.check{display:flex;align-items:center;gap:10px;font-size:15px}
-.check input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.field>span{font-size:12px;color:var(--mut)}
+input[type=text],input[type=number],input[type=url],input[type=date],select,textarea{width:100%;min-width:0;border:2px solid var(--line);background:var(--bg);border-radius:0;padding:10px 11px;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
+textarea{min-height:72px;resize:vertical}
+.check{display:flex;align-items:center;gap:10px}
+.check input{width:22px;height:22px;accent-color:var(--red);flex:none}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
-.seg button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px;font-size:14px}
-.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.row{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px}
+.seg button{border:2px solid var(--line);background:var(--bg);padding:7px 11px;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.catgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.catgrid button{border:2px solid transparent;padding:6px 2px 5px;display:grid;justify-items:center;gap:3px;font-size:11px;font-weight:600;color:#fff;min-width:0}
+.catgrid button svg{width:30px;height:30px}
+.catgrid button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.catgrid button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--bg)}
+.row{border:2px solid var(--line);padding:10px;display:grid;gap:8px}
 .row-top{display:flex;gap:8px;align-items:center}
 .row-top>*:first-child{flex:1;min-width:0}
-.x{border:0;background:none;color:var(--muted);width:34px;height:34px;border-radius:50%;flex:none;font-size:20px;line-height:1}
-.hint{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.x{border:0;background:none;color:var(--mut);width:36px;height:36px;flex:none;font-size:22px;line-height:1}
+.hint{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
 .hint.bad{color:var(--warn);font-weight:600}
 .hm{display:flex;gap:6px;align-items:center}
-.hm input{width:64px}
-.timer-on{background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600;font-variant-numeric:tabular-nums}
-.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
-.imgs .im{aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--surface2);border:0;padding:0;max-width:100%}
+.hm input{width:62px}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.imgs .im{aspect-ratio:1;overflow:hidden;background:var(--soft);border:0;padding:0;max-width:100%}
 .imgs .im img{width:100%;height:100%;object-fit:cover;display:block}
-.add-img{aspect-ratio:1;border:1.5px dashed var(--line);border-radius:10px;display:grid;place-items:center;text-align:center;font-size:12px;color:var(--muted);padding:6px;cursor:pointer}
-.add-img input{display:none}
-.sum{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.tile{background:var(--surface);border-radius:var(--r);padding:12px 14px;display:grid;gap:2px}
-.tile b{font-family:var(--f-display);font-size:22px;font-variant-numeric:tabular-nums}
-.bars{display:grid;gap:8px}
-.bar{display:grid;grid-template-columns:110px 1fr auto;gap:8px;align-items:center;font-size:14px;font-variant-numeric:tabular-nums}
-.bar i{display:block;height:10px;border-radius:5px;background:var(--accent)}
-.bar .track{background:var(--surface2);border-radius:5px}
-.stock{display:flex;flex-wrap:wrap;gap:6px}
-.swatch{width:68px;height:68px;border-radius:50%;flex:none;display:grid;place-items:center;overflow:hidden}
-.swatch img{width:100%;height:100%;object-fit:cover}
-.shop-item{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:10px 12px}
-.shop-item .t{flex:1;min-width:0}
-.shop-item.done .t{text-decoration:line-through;color:var(--muted)}
-.confirm{background:var(--warn-soft);color:var(--ink);border-radius:12px;padding:12px;display:grid;gap:10px}
-.lb{position:fixed;inset:0;z-index:60;background:rgba(10,8,14,.92);display:grid;grid-template-rows:auto 1fr;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.add-img{aspect-ratio:1;border:2px dashed var(--mut);display:grid;place-items:center;text-align:center;font-size:12px;color:var(--mut);padding:6px;cursor:pointer}
+.add-img b{font:800 24px var(--f-d);color:var(--ink);display:block}
+details.more{background:var(--surface);border:2px solid var(--ink)}
+details.more>summary{padding:14px;font:800 14px var(--f-d);cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+details.more>summary::after{content:"+";font-size:18px}
+details.more[open]>summary::after{content:"−"}
+details.more>.in{padding:0 14px 14px;display:grid;gap:12px}
+.confirm{background:var(--surface);border:2px solid var(--warn);padding:12px;display:grid;gap:10px}
+.lb{position:fixed;inset:0;z-index:60;background:rgba(8,8,8,.94);display:grid;grid-template-rows:auto 1fr;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 .lb .bar2{display:flex;justify-content:space-between;gap:8px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
 .lb .stage{overflow:auto;display:grid;place-items:center;padding:8px}
 .lb img{max-width:100%;max-height:calc(100vh - 120px);object-fit:contain}
-.lb .btn.ghost{background:rgba(255,255,255,.14);color:#fff}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:70;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px)}
-a{color:var(--accent)}
-.link-out{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;font-size:14px}
-.sec-title{font-family:var(--f-display);font-weight:700;font-size:15px;margin:14px 2px 8px}
-@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(16px);opacity:.6}}}
-.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px}
-@media(min-width:520px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.tile-p{border:0;background:none;padding:0;text-align:left;display:grid;gap:4px;min-width:0;color:inherit}
-.tp-img{aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:var(--surface);display:grid;place-items:center;max-width:100%}
-.tp-img img{width:100%;height:100%;object-fit:cover;display:block}
-.tp-t{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tp-m{font-size:12px;color:var(--muted)}
-.card-wrap{position:relative}
-.card-wrap .card{padding-right:70px}
-.qt{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:1px solid var(--line);background:var(--bg);border-radius:999px;min-width:52px;height:40px;padding:0 12px;font-weight:600;color:var(--accent)}
-.qt.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.lb .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);color:#fff}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:70;background:var(--ink);color:var(--bg);padding:10px 16px;font-size:14px;font-weight:600;max-width:calc(100% - 32px)}
+.shop-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);padding:10px 12px}
+.shop-item .t{flex:1;min-width:0}
+.shop-item.done .t{text-decoration:line-through;color:var(--mut)}
+.link-out{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;font-size:13px;color:var(--blue)}
+.picked{display:flex;gap:6px;flex-wrap:wrap}
+.picked img{width:64px;height:64px;object-fit:cover}
+.idea{display:flex;gap:8px;align-items:flex-start;border-bottom:1.5px solid var(--line);padding:8px 0}
+.idea p{margin:0;flex:1;white-space:pre-wrap}
+.nb{font-size:12px;color:var(--mut)}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .16s ease-out}@keyframes up{from{transform:translateY(14px);opacity:.7}}}
 </style>
 </head>
 <body>
-
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<filter id="fuzz" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="7"/></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="0.6"/></filter>
+<pattern id="dots" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1.05" fill="rgba(255,255,255,.45)"/></pattern>
+</defs></svg>
 <div class="wrap">
-  <header class="top"><h1 id="ttl">Изделия</h1><div id="topR"></div></header>
-  <main id="main"><div class="empty"><p class="muted">Загружаю твои записи…</p></div></main>
+  <header class="top"><h1 id="ttl">Шкаф</h1><span class="cnt" id="cnt" hidden></span><button class="menu-btn" id="menuBtn" aria-label="Меню">⋯</button></header>
+  <main id="main"><div class="empty"><p>Открываю твои записи…</p></div></main>
 </div>
-<button class="fab" id="fab" aria-label="Добавить"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+<button class="fab" id="fab" aria-label="Добавить"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 4v16M4 12h16"/></svg></button>
+<input type="file" id="quickYarn" accept="image/*" multiple hidden>
 <nav class="tabs"><div class="in" id="tabs"></div></nav>
 <div id="sheet"></div>
 <div id="lb"></div>
-<div id="toast" hidden class="toast"></div>
-
+<div id="toast" class="toast" hidden></div>
 <script>
 (() => {
-// ---------- constants ----------
-const STATUS = {wip:'В процессе', plan:'В планах', frozen:'На паузе', done:'Готово'};
-const STATUS_ORDER = ['wip','plan','frozen','done'];
-const TYPES = {regular:'Обычное', granny:'Бабушкины квадраты', motif:'Мотивы (снежинки и т.п.)'};
-const STAGES = {knit:'Вязание', join:'Связывание квадратов', edge:'Обвязка', block:'ВТО', assembly:'Сборка', other:'Другое'};
-const BLOCK = ['Влажное','Паром','Стирка','На закрепке (пины)'];
-const HOOKS = ['1.5','2','2.5','3','3.5','4','4.5','5','5.5','6','6.5','7','8','9','10','12','15'];
-const KINDS = ['Шапка','Шарф','Снуд','Варежки','Носки','Свитер','Кардиган','Плед','Сумка','Игрушка','Снежинка','Салфетка','Подушка','Топ','Панамка','Брелок'];
-
-const GROUPS = {wool:'Шерсть', cotton:'Хлопок', other:'Остальное'};
-function autoGroup(y){ const c = String(y?.composition||'').toLowerCase(); if (/шерст|мерин|альпак|мохер|кашемир|ангор|верблюж|wool|merino|alpaca|mohair|cashmere|angora/.test(c)) return 'wool'; if (/хлоп|(^|[^а-яё])л[её]н|льн|бамбук|вискоз|cotton|linen|bamboo|viscose/.test(c)) return 'cotton'; return 'other'; }
-const yarnGroup = y => GROUPS[y?.group] ? y.group : autoGroup(y);
-const ICON = {
-  proj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>',
-  yarn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M6 7c4 1 9 5 11 11M5 12c4 0 8 3 9 8M9 4.5c3 2 7 6 10 7"/></svg>',
-  shop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a1 1 0 01-1 .8H7.2a1 1 0 01-1-.8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>',
-  stats:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>',
-  back:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
-  ball:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".55"><circle cx="12" cy="12" r="8"/><path d="M6 7c4 1 9 5 11 11M5 12c4 0 8 3 9 8M9 4.5c3 2 7 6 10 7"/></svg>'
-};
-
-// ---------- state ----------
-const S = {projects:[], yarns:[], people:[], shop:[], tab:'projects', filter:'all', yfilter:'all', loaded:{}, err:null, slow:false};
-let db = null, assets = null, sample = null, sampleImg = false, maxImg = 1;
+// ================= helpers =================
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0; };
 const fmtN = n => (Math.round(n*100)/100).toLocaleString('ru-RU');
-const money = n => n ? fmtN(n) + ' р.' : '—';
+const money = n => n ? fmtN(Math.round(n*100)/100) + ' BYN' : '';
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36)+Math.random().toString(36).slice(2)));
-const img = id => URLS[id] || '';
-const fmtMin = m => { m = Math.round(m||0); if (!m) return '0 мин'; const h = Math.floor(m/60), mm = m%60; return (h? h+' ч ':'') + (mm? mm+' мин':'').trim(); };
+const fmtMin = m => { m = Math.round(m||0); if (!m) return '0 мин'; const h = Math.floor(m/60), mm = m%60; return ((h? h+' ч ':'') + (mm? mm+' мин':'')).trim(); };
+const fmtH = m => { m = Math.round(m||0); if (m < 60) return m + ' мин'; const h = m/60; return (h >= 10 ? Math.round(h) : Math.round(h*10)/10).toLocaleString('ru-RU') + ' ч'; };
 const fmtClock = ms => { const s = Math.max(0, Math.floor(ms/1000)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), ss=s%60; return (h? h+':':'') + String(m).padStart(h?2:1,'0') + ':' + String(ss).padStart(2,'0'); };
 const fmtDate = d => d ? new Date(d+'T00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}) : '';
+const today = () => new Date().toISOString().slice(0,10);
 function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,2600); }
+const plural = (n, a, b, c) => { n = Math.abs(n) % 100; const n1 = n % 10; if (n > 10 && n < 20) return c; if (n1 > 1 && n1 < 5) return b; if (n1 === 1) return a; return c; };
 
-// ---------- derived ----------
-const yarnById = id => S.yarns.find(y => y.id === id);
-const personById = id => S.people.find(p => p.id === id);
-function yarnUse(yid, excludeProjectId){
-  let used=0, reserved=0; const where=[];
-  for (const p of S.projects){
-    if (p.id === excludeProjectId) continue;
-    for (const a of (p.yarns||[])) if (a.yarnId === yid && num(a.skeins)>0){
-      if (p.status==='done') used += num(a.skeins); else reserved += num(a.skeins);
-      where.push({p, n:num(a.skeins)});
+// ================= dictionaries =================
+const STATUS = {plan:'В планах', wip:'Вяжу', frozen:'На паузе', done:'Готово'};
+const GROUPS = {wool:'Шерсть', cotton:'Хлопок', other:'Остальное'};
+const GROUP_COL = {wool:'#B5552B', cotton:'#FFC93C', other:'#1F4FD8'};
+function autoGroup(y){ const c = String(y?.composition||'').toLowerCase(); if (/шерст|мерин|альпак|мохер|кашемир|ангор|верблюж|wool|merino|alpaca|mohair|cashmere|angora/.test(c)) return 'wool'; if (/хлоп|(^|[^а-яё])л[её]н|льн|бамбук|вискоз|cotton|linen|bamboo|viscose/.test(c)) return 'cotton'; return 'other'; }
+const yarnGroup = y => GROUPS[y?.group] ? y.group : autoGroup(y);
+const STAGES = {knit:'Вязание', join:'Связывание', edge:'Обвязка', block:'ВТО', assembly:'Сборка', other:'Другое'};
+const BLOCK = ['Влажное','Паром','Стирка','На закрепке'];
+const HOOKS = ['1.5','1.75','2','2.5','3','3.5','4','4.5','5','5.5','6','6.5','7','8','9','10','12','15'];
+const PROG = {regular:'Не считать', granny:'Квадраты', parts:'Детали', motif:'Штуки'};
+const PARTS_PRESET = {card:['Спинка','Перед левый','Перед правый','Рукав','Рукав','Обвязка'], vest:['Спинка','Перед','Обвязка'], mit:['Левая','Правая'], mitts:['Левая','Правая'], sock:['Левый','Правый']};
+
+// ================= icons (style A: filled shapes) =================
+const SH = {
+ snow:{d:'M24 5v38M7.5 14.5l33 19M7.5 33.5l33-19M18.5 7.5L24 13l5.5-5.5M18.5 40.5L24 35l5.5 5.5M7 21.5l7.3 1.8-2-7M41 26.5l-7.3-1.8 2 7M7 26.5l7.3-1.8-2 7M41 21.5l-7.3 1.8 2-7',line:1},
+ hat:{d:'M9 33a15 15 0 0130 0z',e:'M7 33h34v7H7z',c:[24,12,4]},
+ scarf:{d:'M11 8h26v10H11z',e:'M15 18v24l7-3V18zM28 18v17l6 3V18z'},
+ mit:{d:'M16 43v-6c-3-2-4-5-4-9V17a8 8 0 0116 0v6l5-4a4 4 0 016 5l-8 11v8z'},
+ mitts:{d:'M14 43V17l3-6h14l3 6v26z',e:'M14 23h20M14 29h20',open:1},
+ sock:{d:'M16 5h14v20l8 9a6 6 0 01-9 8L16 30z',e:'M16 12h14',open:1},
+ card:{d:'M17 6L8 12v30h12V18zM31 6l9 6v30H28V18z',e:'M17 6c2 6 5 8 7 8s5-2 7-8'},
+ vest:{d:'M16 6c2 5 5 7 8 7s6-2 8-7l7 6-3 9v21H12V21l-3-9z'},
+ bag:{d:'M9 18h30l-3 24H12z',e:'M17 18v-5a7 7 0 0114 0v5',open:1},
+ shawl:{d:'M5 10h38L24 41z',e:'M15 10l9 16 9-16',open:1},
+ plaid:{d:'M7 7h34v34H7z',e:'M7 18.5h34M7 29.5h34M18.5 7v34M29.5 7v34',open:1},
+ cat:{d:'M10 41V24L8 9l9 7h14l9-7-2 15v17z',e:'M19 26h1M28 26h1',open:1},
+ heart:{d:'M24 41L9 26a8.5 8.5 0 0112-12l3 3 3-3a8.5 8.5 0 0112 12z'},
+ star:{d:'M24 5l5.5 12.5 13.5 1.2-10.3 9 3.1 13.3L24 34l-11.8 7 3.1-13.3-10.3-9 13.5-1.2z'},
+ flower:{d:'M24 18a6 6 0 110-.01M24 30a6 6 0 110-.01M18 24a6 6 0 110-.01M30 24a6 6 0 110-.01',e:'M24 28a4 4 0 100-8 4 4 0 000 8z'},
+ cup:{d:'M8 14h26v14a10 10 0 01-10 10h-6A10 10 0 018 28z',e:'M34 18h3a5 5 0 010 10h-3',open:1},
+ tree:{d:'M24 4l11 16h-6l9 13H10l9-13h-6z',e:'M21 33h6v9h-6z'},
+ ball:{d:'M24 7a17 17 0 110 34 17 17 0 010-34z',e:'M11 17c8 2 18 10 21 22M9 25c8 0 15 6 17 15M17 9c6 4 14 12 20 14',open:1},
+ shelf:{d:'M5 17h38v4H5zM5 37h38v4H5z',e:'M13 11a5 5 0 100 .01M24 11a5 5 0 100 .01M35 31a5 5 0 100 .01M24 31a5 5 0 100 .01'},
+ basket:{d:'M5 20h38l-5 22H10z',e:'M15 20l6-12M33 20l-6-12',open:1},
+ now:{d:'M24 9a16 16 0 110 32 16 16 0 010-32z',e:'M24 16v9l6 4M19 4h10',open:1},
+ house:{d:'M6 22L24 7l18 15v20H6z',e:'M19 42V30h10v12'}
+};
+function icon(k, fg, bg){
+  const s = SH[k] || SH.star; bg = bg || 'transparent';
+  if (s.line) return `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="${s.d}" style="fill:none;stroke:${fg};stroke-width:5;stroke-linecap:square"/></svg>`;
+  const e = s.e ? `<path d="${s.e}" style="fill:${s.open?'none':bg};stroke:${s.open?bg:fg};stroke-width:${s.open?3.5:2};stroke-linecap:round;stroke-linejoin:round"/>` : '';
+  const c = s.c ? `<circle cx="${s.c[0]}" cy="${s.c[1]}" r="${s.c[2]}" style="fill:${fg}"/>` : '';
+  return `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="${s.d}" style="fill:${fg};stroke:${fg};stroke-width:2;stroke-linejoin:round"/>${e}${c}</svg>`;
+}
+const LIGHT = c => { const h = String(c||'').replace('#',''); if (h.length!==6) return false; const n=parseInt(h,16); const r=n>>16,g=n>>8&255,b=n&255; return (r*299+g*587+b*114)/1000 > 165; };
+const DEFAULT_CATS = [
+ {id:'snow',name:'Снежинки',icon:'snow',color:'#1F4FD8'},
+ {id:'hat',name:'Шапки',icon:'hat',color:'#FF5A36'},
+ {id:'scarf',name:'Шарфы',icon:'scarf',color:'#FFC93C'},
+ {id:'mit',name:'Варежки',icon:'mit',color:'#2E9E5B'},
+ {id:'mitts',name:'Митенки',icon:'mitts',color:'#E7A1B0'},
+ {id:'sock',name:'Носки',icon:'sock',color:'#5B6B8C'},
+ {id:'card',name:'Кардиганы',icon:'card',color:'#111111'},
+ {id:'vest',name:'Жилетки',icon:'vest',color:'#FF5A36'},
+ {id:'bag',name:'Сумки',icon:'bag',color:'#2E9E5B'},
+ {id:'shawl',name:'Шали и платки',icon:'shawl',color:'#E7A1B0'},
+ {id:'plaid',name:'Пледы',icon:'plaid',color:'#FFC93C'},
+ {id:'cat',name:'Для котика',icon:'cat',color:'#5B6B8C'},
+ {id:'other',name:'Другое',icon:'star',color:'#1F4FD8'}
+];
+const ICON_LIB = ['heart','star','flower','cup','tree','ball','snow','hat','scarf','mit','mitts','sock','card','vest','bag','shawl','plaid','cat'];
+const PALETTE = ['#FF5A36','#FFC93C','#1F4FD8','#2E9E5B','#111111','#5B6B8C','#E7A1B0','#B5552B'];
+function allCats(){ const custom = (MEM.meta.get('cats')?.list) || []; const base = DEFAULT_CATS.filter(c=>c.id!=='other'); return [...base, ...custom, DEFAULT_CATS.find(c=>c.id==='other')]; }
+const catInfo = id => allCats().find(c=>c.id===id) || DEFAULT_CATS.find(c=>c.id==='other');
+function catOf(p){
+  if (p.category && allCats().some(c=>c.id===p.category)) return p.category;
+  const k = String(p.kind||p.title||'').toLowerCase();
+  const map = [[/снежин/,'snow'],[/шапк|бини|берет|панам/,'hat'],[/шарф|снуд/,'scarf'],[/варежк/,'mit'],[/митенк/,'mitts'],[/носк|следк/,'sock'],[/кардиган|свитер|кофт|джемпер/,'card'],[/жилет/,'vest'],[/сумк|шопер/,'bag'],[/шал|платок|бактус/,'shawl'],[/плед|покрывал/,'plaid'],[/кот|кош/,'cat']];
+  for (const [re,id] of map) if (re.test(k)) return id;
+  if (p.type==='motif') return 'snow';
+  return 'other';
+}
+const catTile = (id, size) => { const c = catInfo(id); const fg = LIGHT(c.color) ? '#111' : '#fff'; return {bg:c.color, fg, svg:icon(c.icon, fg, c.color)}; };
+
+// ================= yarn ball (procedural SVG) =================
+const shade=(hex,f)=>{ const n=parseInt(String(hex||'#999999').slice(1),16); let r=n>>16,g=n>>8&255,b=n&255; const t=f<0?0:255,p=Math.abs(f); r=Math.round((t-r)*p+r); g=Math.round((t-g)*p+g); b=Math.round((t-b)*p+b); return `rgb(${r},${g},${b})`; };
+let ballN = 0;
+function yarnColors(y){ const c = (Array.isArray(y?.colors) && y.colors.length) ? y.colors : [y?.color || '#C9B8D6']; return (y?.multi===false) ? [c[0]] : (y?.multi ? c : [c[0]]); }
+function ballSVG(kind, cols){
+  const id = 'bc' + (ballN++); cols = (cols && cols.length) ? cols : ['#C9B8D6']; const c = cols[0]; const R = 34;
+  let base = '';
+  if (cols.length === 1) base = `<circle r="${R}" fill="${c}"/>`;
+  else { const n = Math.max(6, cols.length*2); for (let i=0;i<n;i++){ const a0=i/n*2*Math.PI-1.2, a1=(i+1)/n*2*Math.PI-1.2, RR=R+2; base += `<path d="M0 0L${(RR*Math.cos(a0)).toFixed(1)} ${(RR*Math.sin(a0)).toFixed(1)}A${RR} ${RR} 0 0 1 ${(RR*Math.cos(a1)).toFixed(1)} ${(RR*Math.sin(a1)).toFixed(1)}z" fill="${cols[i%cols.length]}"/>`; } }
+  let wraps = '';
+  [[-30,9],[60,7],[150,7]].forEach(([rot,cnt],si)=>{ for (let j=0;j<cnt;j++){ const off=-R+(j+0.5)*(2*R/cnt); const col = cols.length>1 ? shade(cols[(j+si)%cols.length],-.28) : shade(c,-.3);
+    wraps += `<path d="M${-R-4} ${off.toFixed(1)} Q 0 ${(off+(kind==='cotton'?10:14)).toFixed(1)} ${R+4} ${off.toFixed(1)}" transform="rotate(${rot})" fill="none" stroke="${col}" stroke-width="${kind==='cotton'?1.6:2.6}" ${kind==='wool'?'filter="url(#soft)"':''} opacity="${si===2?.55:.85}"/>`; } });
+  let extra = '', halo = '';
+  if (kind==='cotton') extra = `<path d="M-20 -22 Q -6 -30 10 -26" stroke="rgba(255,255,255,.75)" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle r="${R}" fill="none" stroke="${shade(c,-.45)}" stroke-width="1.5"/>`;
+  if (kind==='other') extra = `<circle r="${R}" fill="url(#dots)"/><circle r="${R}" fill="none" stroke="${shade(c,-.45)}" stroke-width="1.5"/>`;
+  if (kind==='wool'){ let h=''; for (let i=0;i<72;i++){ const a=i/72*2*Math.PI, r1=R-2, r2=R+4+((i*37)%5); const col = cols[i%cols.length]; h += `<line x1="${(r1*Math.cos(a)).toFixed(1)}" y1="${(r1*Math.sin(a)).toFixed(1)}" x2="${(r2*Math.cos(a+.06)).toFixed(1)}" y2="${(r2*Math.sin(a+.06)).toFixed(1)}" stroke="${shade(col,.25)}" stroke-width="1.1" stroke-linecap="round"/>`; } halo = `<g filter="url(#fuzz)" opacity=".9">${h}</g>`; }
+  const tail = `<path d="M26 22 q10 4 6 12 q-3 6 6 8" fill="none" stroke="${shade(c, kind==='wool'?.1:-.2)}" stroke-width="${kind==='cotton'?1.8:2.4}" stroke-linecap="round" ${kind==='wool'?'filter="url(#fuzz)"':''}/>`;
+  return `<svg viewBox="-42 -42 84 84" aria-hidden="true"><defs><clipPath id="${id}"><circle r="${R}"/></clipPath></defs>${halo}${tail}<g clip-path="url(#${id})">${base}${wraps}</g>${extra}</svg>`;
+}
+const yarnBall = y => ballSVG(yarnGroup(y), yarnColors(y));
+
+// ================= color from photo =================
+const hex = (r,g,b) => '#' + [r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+const dist = (a,b) => Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]);
+async function extractColors(blob){
+  try{
+    const url = URL.createObjectURL(blob); const im = new Image(); im.src = url; await im.decode();
+    const N = 64, cv = document.createElement('canvas'); cv.width = cv.height = N; const x = cv.getContext('2d', {willReadFrequently:true});
+    const s = Math.min(im.naturalWidth, im.naturalHeight); x.drawImage(im, (im.naturalWidth-s)/2, (im.naturalHeight-s)/2, s, s, 0, 0, N, N); URL.revokeObjectURL(url);
+    const d = x.getImageData(0,0,N,N).data; const px = (i,j) => { const o=(j*N+i)*4; return [d[o],d[o+1],d[o+2]]; };
+    const border = []; for (let i=0;i<N;i++){ border.push(px(i,0),px(i,N-1),px(0,i),px(N-1,i)); }
+    const bgc = border.reduce((a,p)=>[a[0]+p[0],a[1]+p[1],a[2]+p[2]],[0,0,0]).map(v=>v/border.length);
+    let pts = []; const lo = Math.floor(N*.18), hi = Math.ceil(N*.82);
+    for (let j=lo;j<hi;j++) for (let i=lo;i<hi;i++){ const p = px(i,j); if (dist(p,bgc) > 45) pts.push(p); }
+    if (pts.length < 80){ pts = []; for (let j=lo;j<hi;j++) for (let i=lo;i<hi;i++) pts.push(px(i,j)); }
+    const K = 4; let cent = [0,1,2,3].map(k => pts[Math.floor((k+.5)/K*pts.length)].slice());
+    let lab = new Array(pts.length).fill(0);
+    for (let it=0; it<10; it++){
+      for (let n=0;n<pts.length;n++){ let b=0, bd=1e9; for (let k=0;k<K;k++){ const dd=dist(pts[n],cent[k]); if (dd<bd){bd=dd;b=k;} } lab[n]=b; }
+      const sum = cent.map(()=>[0,0,0,0]); pts.forEach((p,n)=>{ const s=sum[lab[n]]; s[0]+=p[0]; s[1]+=p[1]; s[2]+=p[2]; s[3]++; });
+      cent = sum.map((s,k)=> s[3] ? [s[0]/s[3], s[1]/s[3], s[2]/s[3]] : cent[k]);
     }
-  }
-  return {used, reserved, where};
-}
-function yarnBalance(y){ const u = yarnUse(y.id); const qty=num(y.qty); return {...u, qty, shelf: qty-u.used, free: qty-u.used-u.reserved}; }
-const totalMin = p => (p.stages||[]).reduce((s,x)=>s+num(x.minutes),0);
-function projCost(p){ let c=0; for (const a of (p.yarns||[])){ const y=yarnById(a.yarnId); if (y) c += num(a.skeins)*num(y.price); } return c + num(p.hardwareCost); }
-function projSkeins(p){ return (p.yarns||[]).reduce((s,a)=>s+num(a.skeins),0); }
-function cover(p){ return (p.photos||[])[0] || (p.refImgs||[])[0] || (p.patternImgs||[])[0]; }
-function motifRate(p){ const sk=projSkeins(p); return (p.type==='motif' && sk>0 && num(p.motifCount)>0) ? num(p.motifCount)/sk : 0; }
-
-// ---------- tabs ----------
-const TABS = [['projects','Изделия',ICON.proj],['yarn','Пряжа',ICON.yarn],['shop','Покупки',ICON.shop],['stats','Итоги',ICON.stats]];
-function renderTabs(){
-  const need = shoppingNeeds().length + S.shop.filter(s=>!s.done).length;
-  $('#tabs').innerHTML = TABS.map(([k,l,i]) => `<button data-tab="${k}" ${S.tab===k?'aria-current="page"':''}>${i}<span>${l}${k==='shop'&&need?` <span class="badge-n">${need}</span>`:''}</span></button>`).join('');
-}
-document.addEventListener('click', e => {
-  const t = e.target.closest('[data-tab]'); if (t){ S.tab = t.dataset.tab; window.scrollTo(0,0); render(); }
-});
-
-// ---------- main render ----------
-function render(){
-  renderTabs();
-  const ttl = {projects:'Изделия', yarn:'Моя пряжа', shop:'Что купить', stats:'Итоги'}[S.tab];
-  $('#ttl').textContent = ttl;
-  $('#fab').hidden = !(S.tab==='projects' || S.tab==='yarn') || !db;
-  $('#topR').innerHTML = '';
-  const m = $('#main');
-  if (!db){ m.innerHTML = `<div class="empty"><p>${S.err ? esc(S.err) : 'Открываю твои записи…'}</p></div>`; return; }
-  const ready = S.loaded.projects && S.loaded.yarns;
-  if (!ready){ m.innerHTML = `<div class="empty"><p class="muted">${S.slow?'Хранилище пока не отвечает. Записи появятся, как только связь восстановится.':'Загружаю твои записи…'}</p></div>`; return; }
-  m.innerHTML = ({projects:viewProjects, yarn:viewYarn, shop:viewShop, stats:viewStats})[S.tab]();
-  tickAll();
+    const cnt = cent.map(()=>0); lab.forEach(l=>cnt[l]++);
+    let cl = cent.map((c,k)=>({c, share:cnt[k]/pts.length})).sort((a,b)=>b.share-a.share);
+    // merge close clusters (shadows of the same colour)
+    const merged = [];
+    for (const k of cl){ const m = merged.find(z => dist(z.c,k.c) < 70); if (m){ m.share += k.share; } else merged.push({...k}); }
+    merged.sort((a,b)=>b.share-a.share);
+    const main = merged[0]; const others = merged.slice(1).filter(z => z.share >= .14 && dist(z.c, main.c) > 85);
+    const colors = [main, ...others].slice(0,4).map(z=>hex(...z.c));
+    return {colors, multi: colors.length > 1};
+  }catch(e){ return {colors:['#C9B8D6'], multi:false}; }
 }
 
-function viewProjects(){
-  const counts = {}; S.projects.forEach(p=>counts[p.status]=(counts[p.status]||0)+1);
-  const chips = [['all','Все',S.projects.length], ...STATUS_ORDER.map(k=>[k,STATUS[k],counts[k]||0])];
-  let list = S.projects.slice().sort((a,b)=> (STATUS_ORDER.indexOf(a.status)-STATUS_ORDER.indexOf(b.status)) || ((b.updatedAt||0)-(a.updatedAt||0)));
-  if (S.filter!=='all') list = list.filter(p=>p.status===S.filter);
-  let h = `<div class="chips" role="group" aria-label="Фильтр">${chips.map(([k,l,n])=>`<button class="chip" data-filter="${k}" aria-pressed="${S.filter===k}">${l}${n?` · ${n}`:''}</button>`).join('')}</div>`;
-  if (!S.projects.length) return h + `<div class="empty">${ICON.ball}<h2>Пока ни одного изделия</h2><p class="muted">Добавь то, что уже связала, вяжешь сейчас или только планируешь. Фото, схемы, пряжа и время — всё в одной карточке.</p><button class="btn" data-new="project">Добавить изделие</button></div>`;
-  if (!list.length) return h + `<div class="empty"><p class="muted">В этом разделе пусто.</p></div>`;
-  const tiles = S.filter==='done' || S.filter==='plan';
-  return h + (tiles ? `<div class="tiles">${list.map(projTile).join('')}</div>` : `<div class="list">${list.map(projCard).join('')}</div>`);
-}
-function projCard(p){
-  const c = cover(p);
-  const yarnNames = (p.yarns||[]).map(a=>yarnById(a.yarnId)?.name).filter(Boolean);
-  const t = totalMin(p);
-  const qt = (p.status==='wip' || p.timer) ? `<button class="qt ${p.timer?'on':''}" data-qt="${p.id}" aria-label="${p.timer?'Остановить таймер':'Запустить таймер'}">${p.timer?'Стоп':'▶'}</button>` : '';
-  return `<div class="card-wrap"><button class="card" data-open-project="${p.id}">
-    <div class="thumb">${c?`<img src="${img(c)}" alt="" loading="lazy">`:ICON.ball}</div>
-    <div class="card-body">
-      <div class="card-title">${esc(p.title||'Без названия')}</div>
-      <div class="meta"><span class="pill st-${p.status}">${STATUS[p.status]}</span>${p.kind?`<span>${esc(p.kind)}</span>`:''}${num(p.copies)>1?`<span>× ${num(p.copies)}</span>`:''}</div>
-      <div class="meta">${p.timer?`<span class="tick-badge">таймер · <span data-tick="${p.timer.startedAt}"></span></span>`:''}${t?`<span>${fmtMin(t)}</span>`:''}${projSkeins(p)?`<span>${fmtN(projSkeins(p))} мот.</span>`:''}${yarnNames.length?`<span>${esc(yarnNames.slice(0,2).join(', '))}</span>`:''}</div>
-    </div></button>${qt}</div>`;
-}
-function projTile(p){
-  const c = cover(p); const bits = [];
-  if (p.kind) bits.push(esc(p.kind));
-  if (p.status==='done' && p.endDate) bits.push(fmtDate(p.endDate));
-  if (p.status==='plan' && projSkeins(p)) bits.push(fmtN(projSkeins(p)) + ' мот.');
-  return `<button class="tile-p" data-open-project="${p.id}"><div class="tp-img">${c?`<img src="${img(c)}" alt="" loading="lazy">`:ICON.ball}</div><div class="tp-t">${esc(p.title||'Без названия')}</div>${bits.length?`<div class="tp-m">${bits.join(' · ')}</div>`:''}</button>`;
-}
-async function quickTimer(id){
-  const p = S.projects.find(x=>x.id===id); if (!p) return;
-  const stages = JSON.parse(JSON.stringify(p.stages||[]));
-  try{
-    if (p.timer){
-      const add = Math.max(1, Math.round((Date.now()-p.timer.startedAt)/60000));
-      const st = stages.find(s=>s.id===p.timer.stageId); if (st) st.minutes = num(st.minutes) + add;
-      await db.collection('projects').doc(id).update({stages, timer:null, updatedAt:Date.now()});
-      toast(`+ ${fmtMin(add)} к этапу «${STAGES[st?.kind]||'этап'}»`);
-    } else {
-      let st = stages.find(s=>s.kind==='knit') || stages[0];
-      if (!st){ st = {id:uid(), kind:'knit', hook:'', minutes:0}; stages.push(st); }
-      await db.collection('projects').doc(id).update({stages, timer:{stageId:st.id, startedAt:Date.now()}, updatedAt:Date.now()});
-      toast(`Таймер запущен: ${STAGES[st.kind]}`);
-    }
-  }catch(e){ toast('Не получилось сохранить, попробуй ещё раз'); }
-}
-
-function viewYarn(){
-  if (!S.yarns.length) return `<div class="empty">${ICON.ball}<h2>Склад пока пуст</h2><p class="muted">Занеси пряжу один раз: состав, граммовку, цену и ссылку. Потом в изделиях просто выбираешь её из списка, а мотки сами распределяются.</p><button class="btn" data-new="yarn">Добавить пряжу</button></div>`;
-  const all = S.yarns.slice().sort((a,b)=> (a.name||'').localeCompare(b.name||'','ru'));
-  const cnt = {}; all.forEach(y=>{ const g = yarnGroup(y); cnt[g] = (cnt[g]||0) + 1; });
-  let h = `<div class="chips" role="group" aria-label="Группа пряжи">${[['all','Все',all.length], ...Object.entries(GROUPS).map(([k,l])=>[k,l,cnt[k]||0])].map(([k,l,n])=>`<button class="chip" data-yfilter="${k}" aria-pressed="${S.yfilter===k}">${l}${n?` · ${n}`:''}</button>`).join('')}</div>`;
-  const groups = S.yfilter==='all' ? Object.keys(GROUPS) : [S.yfilter];
-  for (const g of groups){ const list = all.filter(y=>yarnGroup(y)===g); if (!list.length) continue; if (S.yfilter==='all') h += `<div class="sec-title">${GROUPS[g]}</div>`; h += `<div class="list">${list.map(yarnCard).join('')}</div>`; }
-  if (S.yfilter!=='all' && !cnt[S.yfilter]) h += `<div class="empty"><p class="muted">В этой группе пока пусто.</p></div>`;
-  return h;
-}
-function yarnCard(y){{
-    const b = yarnBalance(y);
-    return `<button class="card" data-open-yarn="${y.id}">
-      <div class="swatch" style="background:${esc(y.color||'var(--surface2)')}">${y.photo?`<img src="${img(y.photo)}" alt="" loading="lazy">`:''}</div>
-      <div class="card-body">
-        <div class="card-title">${esc(y.name||'Без названия')}</div>
-        <div class="meta">${y.brand?`<span>${esc(y.brand)}</span>`:''}${y.composition?`<span>${esc(y.composition)}</span>`:''}${(y.weight||y.length)?`<span>${y.weight?num(y.weight)+' г':''}${y.weight&&y.length?' / ':''}${y.length?num(y.length)+' м':''}</span>`:''}</div>
-        <div class="stock"><span class="pill st-done">в шкафу ${fmtN(b.shelf)}</span>${b.reserved?`<span class="pill st-plan">в резерве ${fmtN(b.reserved)}</span>`:''}<span class="pill ${b.free<0?'st-wip':'st-frozen'}">${b.free<0?'не хватает '+fmtN(-b.free):'свободно '+fmtN(b.free)}</span></div>
-      </div></button>`;}
-}
-
-function shoppingNeeds(){
-  const out=[];
-  for (const y of S.yarns){ const b=yarnBalance(y); if (b.free<0) out.push({y, n:-b.free, for:b.where.filter(w=>w.p.status!=='done').map(w=>w.p.title||'Без названия')}); }
-  return out;
-}
-function viewShop(){
-  const needs = shoppingNeeds();
-  let h = `<div class="sec-title">Не хватает под планы</div>`;
-  h += needs.length ? `<div class="list">${needs.map(({y,n,for:f})=>`<div class="shop-item"><div class="t"><b>${esc(y.name)}</b> — докупить ${fmtN(n)} мот.${num(y.price)?` · ≈ ${money(n*num(y.price))}`:''}<div class="hint">для: ${esc(f.join(', '))}</div>${y.link?`<a class="link-out" href="${esc(y.link)}" target="_blank" rel="noopener">${esc(y.link)}</a>`:''}</div><button class="btn sm" data-bought="${y.id}" data-n="${n}">Купила</button></div>`).join('')}</div>`
-    : `<div class="empty"><p class="muted">Под все планы пряжи хватает. Если в изделии указать больше мотков, чем лежит в шкафу, разница появится здесь.</p></div>`;
-  h += `<div class="sec-title">Мой список</div>
-    <form class="sec" id="shopForm"><div class="field"><span>Что купить</span><input type="text" id="shopText" placeholder="Например: пуговицы 15 мм, 6 шт"></div>
-    <div class="grid2"><div class="field"><span>Ссылка (необязательно)</span><input type="url" id="shopLink" placeholder="https://"></div><div class="field"><span>Сколько</span><input type="text" id="shopQty" placeholder="2 мотка"></div></div>
-    <button class="btn" type="submit">Добавить в список</button></form>`;
-  const items = S.shop.slice().sort((a,b)=>(a.done-b.done)||((a.createdAt||0)-(b.createdAt||0)));
-  if (items.length){
-    h += `<div class="list" style="margin-top:10px">${items.map(s=>`<div class="shop-item ${s.done?'done':''}"><label class="check"><input type="checkbox" data-shop-done="${s.id}" ${s.done?'checked':''} aria-label="Куплено"></label><div class="t">${esc(s.text)}${s.qty?` <span class="muted">· ${esc(s.qty)}</span>`:''}${s.link?`<a class="link-out" href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.link)}</a>`:''}</div><button class="x" data-shop-del="${s.id}" aria-label="Убрать">×</button></div>`).join('')}</div>`;
-  }
-  return h;
-}
-
-function viewStats(){
-  const done = S.projects.filter(p=>p.status==='done');
-  const allMin = S.projects.reduce((s,p)=>s+totalMin(p),0);
-  const spent = done.reduce((s,p)=>s+projCost(p),0);
-  const skeins = done.reduce((s,p)=>s+projSkeins(p),0);
-  const items = done.reduce((s,p)=>s+Math.max(1,num(p.copies)||1),0);
-  const byStage = {}; S.projects.forEach(p=>(p.stages||[]).forEach(st=>byStage[st.kind]=(byStage[st.kind]||0)+num(st.minutes)));
-  const maxSt = Math.max(1,...Object.values(byStage));
-  let h = `<div class="sum">
-    <div class="tile"><span class="small muted">Готово изделий</span><b>${items}</b></div>
-    <div class="tile"><span class="small muted">Часов за вязанием</span><b>${Math.round(allMin/60)} ч</b></div>
-    <div class="tile"><span class="small muted">Ушло мотков</span><b>${fmtN(skeins)}</b></div>
-    <div class="tile"><span class="small muted">Пряжа и фурнитура</span><b>${spent?fmtN(Math.round(spent)):'0'} р.</b></div></div>`;
-  const stEntries = Object.entries(byStage).filter(([,v])=>v>0);
-  if (stEntries.length){
-    h += `<div class="sec-title">Время по этапам</div><div class="sec bars">${stEntries.sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar"><span>${STAGES[k]||k}</span><span class="track"><i style="width:${Math.max(3,v/maxSt*100)}%"></i></span><span class="small muted">${fmtMin(v)}</span></div>`).join('')}</div>`;
-  }
-  const motifs = S.projects.filter(p=>motifRate(p)>0);
-  if (motifs.length){
-    h += `<div class="sec-title">Мотивы из одного мотка</div><div class="sec">${motifs.map(p=>{const y=yarnById((p.yarns||[])[0]?.yarnId);return `<div class="row-top"><span>${esc(p.title||'Без названия')}${y?` <span class="muted small">· ${esc(y.name)}</span>`:''}</span><b>${fmtN(motifRate(p))} шт.${y&&num(y.weight)?` <span class="muted small">(${fmtN(num(y.weight)/motifRate(p))} г/шт)</span>`:''}</b></div>`;}).join('')}</div>`;
-  }
-  // people
-  const gifts = {}; S.projects.forEach(p=>(p.gifts||[]).forEach(g=>{ if(!g.personId) return; (gifts[g.personId] ||= []).push({p, qty:Math.max(1,num(g.qty)||1), date:g.date}); }));
-  h += `<div class="sec-title">Кому я дарила</div><div class="sec">`;
-  if (!S.people.length) h += `<p class="muted small" style="margin:0">Добавь людей, и в изделии можно будет отметить, кому оно подарено.</p>`;
-  h += S.people.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ru')).map(pr=>{
-    const g = gifts[pr.id]||[]; const n = g.reduce((s,x)=>s+x.qty,0);
-    return `<div class="row"><div class="row-top"><b>${esc(pr.name)}</b><span class="muted small">${n?n+' шт.':'пока ничего'}</span><button class="x" data-person-del="${pr.id}" aria-label="Удалить">×</button></div>${g.length?`<div class="hint">${g.map(x=>esc(x.p.title||'Без названия')+(x.qty>1?' ×'+x.qty:'')+(x.date?' · '+fmtDate(x.date):'')).join('<br>')}</div>`:''}<div data-confirm-slot="${pr.id}"></div></div>`;
-  }).join('');
-  h += `<form id="personForm" class="row-top"><input type="text" id="personName" placeholder="Имя, например «Мама»"><button class="btn sm" type="submit">Добавить</button></form></div>`;
-  h += backupSection();
-  return h;
-}
-
-// ---------- main interactions ----------
-document.addEventListener('click', async e => {
-  const q = e.target.closest('[data-qt]'); if (q){ quickTimer(q.dataset.qt); return; }
-  const yf = e.target.closest('[data-yfilter]'); if (yf){ S.yfilter=yf.dataset.yfilter; render(); return; }
-  const f = e.target.closest('[data-filter]'); if (f){ S.filter=f.dataset.filter; render(); return; }
-  const op = e.target.closest('[data-open-project]'); if (op){ openProject(op.dataset.openProject); return; }
-  const oy = e.target.closest('[data-open-yarn]'); if (oy){ openYarn(oy.dataset.openYarn); return; }
-  const nw = e.target.closest('[data-new]'); if (nw){ nw.dataset.new==='yarn'?openYarn(null):openProject(null); return; }
-  const bt = e.target.closest('[data-bought]'); if (bt){ const y=yarnById(bt.dataset.bought); if(!y) return; try{ await db.collection('yarns').doc(y.id).update({qty: num(y.qty)+num(bt.dataset.n), updatedAt:Date.now()}); toast(`Добавила ${fmtN(num(bt.dataset.n))} мот. на склад`);}catch(err){toast('Не получилось сохранить, попробуй ещё раз');} return; }
-  const sd = e.target.closest('[data-shop-del]'); if (sd){ try{ await db.collection('shop').doc(sd.dataset.shopDel).delete(); }catch(err){toast('Не получилось убрать');} return; }
-  const pd = e.target.closest('[data-person-del]'); if (pd){ const slot=document.querySelector(`[data-confirm-slot="${pd.dataset.personDel}"]`); slot.innerHTML=`<div class="confirm"><span>Удалить человека? Отметки о подарках в изделиях останутся без имени.</span><div class="row-top"><button class="btn danger sm" data-person-del-yes="${pd.dataset.personDel}">Удалить</button><button class="btn ghost sm" data-cancel-slot>Отмена</button></div></div>`; return; }
-  const pdy = e.target.closest('[data-person-del-yes]'); if (pdy){ try{ await db.collection('people').doc(pdy.dataset.personDelYes).delete(); }catch(err){toast('Не получилось удалить');} return; }
-  if (e.target.closest('[data-cancel-slot]')){ e.target.closest('[data-confirm-slot]').innerHTML=''; return; }
-});
-document.addEventListener('change', async e => {
-  const sd = e.target.closest('[data-shop-done]'); if (sd){ try{ await db.collection('shop').doc(sd.dataset.shopDone).update({done: sd.checked}); }catch(err){toast('Не получилось сохранить');} }
-});
-document.addEventListener('submit', async e => {
-  if (e.target.id==='shopForm'){ e.preventDefault(); const t=$('#shopText').value.trim(); if(!t) return; try{ await db.collection('shop').add({text:t, link:$('#shopLink').value.trim(), qty:$('#shopQty').value.trim(), done:false, createdAt:Date.now()}); $('#shopText').value=$('#shopLink').value=$('#shopQty').value=''; }catch(err){toast('Не получилось добавить');} }
-  if (e.target.id==='personForm'){ e.preventDefault(); const n=$('#personName').value.trim(); if(!n) return; try{ await db.collection('people').add({name:n, createdAt:Date.now()}); $('#personName').value=''; }catch(err){toast('Не получилось добавить');} }
-});
-$('#fab').addEventListener('click', ()=> S.tab==='yarn' ? openYarn(null) : openProject(null));
-
-// ---------- editor infrastructure ----------
-let ED = null; // {kind:'project'|'yarn', id, form, created, saver}
-function makeSaver(coll){
-  const sv = {timer:null, busy:false, again:false, pending:false};
-  sv.schedule = () => { sv.pending=true; setSave('Сохраняю…'); clearTimeout(sv.timer); sv.timer=setTimeout(sv.flush, 700); };
-  sv.flush = async () => {
-    clearTimeout(sv.timer); const E = sv.ed; if (!sv.pending || !E) return;
-    if (sv.busy){ sv.again=true; return; }
-    sv.busy=true; sv.pending=false;
-    const data = JSON.parse(JSON.stringify(E.form)); delete data.id; data.updatedAt = Date.now(); if (!data.createdAt) data.createdAt = Date.now(); E.form.createdAt = data.createdAt;
-    try{ await db.collection(coll).doc(E.id).set(data); E.created=true; if (ED===E) setSave('Сохранено'); }
-    catch(err){ sv.pending=true; setSave(err?.code==='quota_exceeded'?'Место в хранилище закончилось':'Не сохранилось, повторю'); setTimeout(()=>sv.flush(), 3000); }
-    sv.busy=false; if (sv.again){ sv.again=false; sv.pending=true; sv.flush(); }
-  };
-  return sv;
-}
-function setSave(t){ const el=$('#saveSt'); if (el) el.textContent=t; }
-function setPath(obj, path, val){ const ks=path.split('.'); let o=obj; for (let i=0;i<ks.length-1;i++){ const k=ks[i]; if (o[k]==null) o[k] = /^\d+$/.test(ks[i+1])?[]:{}; o=o[k]; } o[ks.at(-1)] = val; }
-function getPath(obj, path){ return path.split('.').reduce((o,k)=>o==null?undefined:o[k], obj); }
-function closeEditor(){ if (ED?.saver) ED.saver.flush(); const prev = ED?.prev; if (prev){ ED = prev; rerenderEditor(); render(); return; } ED=null; $('#sheet').innerHTML=''; document.body.style.overflow=''; render(); }
-function rerenderEditor(){ const sh=$('#sheet .sheet'); const y=sh?sh.scrollTop:0; (ED.kind==='project'?drawProject:drawYarn)(); const n=$('#sheet .sheet'); if(n) n.scrollTop=y; }
-
-$('#sheet').addEventListener('input', e => {
-  if (!ED) return; const el = e.target;
-  if (el.dataset.f){ let v = el.type==='checkbox' ? el.checked : el.value; setPath(ED.form, el.dataset.f, v); ED.saver.schedule(); if (el.dataset.f==='title') $('#edTitle').textContent = v || (ED.kind==='yarn'?'Новая пряжа':'Новое изделие'); if (el.dataset.hints!=null) updateHints(); if (el.dataset.rr!=null) rerenderEditor(); }
-  if (el.dataset.time){ const i=+el.dataset.time; const row=el.closest('[data-stage-row]'); const h=num(row.querySelector('[data-part="h"]').value), m=num(row.querySelector('[data-part="m"]').value); ED.form.stages[i].minutes = Math.round(h*60+m); ED.saver.schedule(); const tot=$('#totTime'); if (tot) tot.textContent=fmtMin(totalMin(ED.form)); }
-});
-$('#sheet').addEventListener('change', e => { const el=e.target; if (el.dataset.img!=null) handleFiles(el); if (el.dataset.ai==='yarn') runAiYarn(el); });
-
-$('#sheet').addEventListener('click', async e => {
-  if (!ED) return;
-  const t = e.target.closest('button,[data-lb]'); if (!t) return;
-  const F = ED.form;
-  if (t.dataset.close!=null) return closeEditor();
-  if (t.dataset.set){ setPath(F, t.dataset.set, t.dataset.val); onSetSide(t.dataset.set, t.dataset.val); ED.saver.schedule(); return rerenderEditor(); }
-  if (t.dataset.add){ const arr = (F[t.dataset.add] ||= []); arr.push(({yarns:{yarnId:'',skeins:''}, stages:{id:uid(),kind:'knit',hook:'',minutes:0}, gifts:{personId:'',date:'',qty:1}})[t.dataset.add]); ED.saver.schedule(); return rerenderEditor(); }
-  if (t.dataset.del){ const [arr,i]=t.dataset.del.split(':'); const it=F[arr][+i]; if (arr==='stages' && F.timer && F.timer.stageId===it.id) F.timer=null; F[arr].splice(+i,1); ED.saver.schedule(); return rerenderEditor(); }
-  if (t.dataset.timerStart){ F.timer = {stageId:t.dataset.timerStart, startedAt:Date.now()}; ED.saver.schedule(); ED.saver.flush(); return rerenderEditor(); }
-  if (t.dataset.timerStop!=null){ stopTimer(); return; }
-  if (t.dataset.gotoYarn){ ED.saver.flush(); const prev = ED; openYarn(t.dataset.gotoYarn); ED.prev = prev; return; }
-  if (t.dataset.again!=null){ knitAgain(); return; }
-  if (t.dataset.aiPattern!=null){ runAiPattern(); return; }
-  if (t.dataset.lb){ openLightbox(t.dataset.lb, t.dataset.arr); return; }
-  if (t.dataset.delAsk!=null){ $('#delSlot').innerHTML = `<div class="confirm"><span>${ED.kind==='yarn'?'Удалить эту пряжу со склада? В изделиях она пропадёт из списка пряжи.':'Удалить изделие вместе с отметками и фото?'}</span><div class="row-top"><button class="btn danger" data-del-yes>Удалить</button><button class="btn ghost" data-del-no>Отмена</button></div></div>`; return; }
-  if (t.dataset.delNo!=null){ $('#delSlot').innerHTML=''; return; }
-  if (t.dataset.delYes!=null){ const coll = ED.kind==='yarn'?'yarns':'projects'; const id=ED.id; const pics = ED.kind==='yarn' ? [ED.form.photo] : [...(ED.form.photos||[]),...(ED.form.patternImgs||[]),...(ED.form.refImgs||[])]; ED.saver.pending=false; clearTimeout(ED.saver.timer); try{ if (ED.created) await db.collection(coll).doc(id).delete(); const prev = ED.prev; if (prev){ ED = prev; rerenderEditor(); toast('Удалено'); render(); return; } ED=null; $('#sheet').innerHTML=''; document.body.style.overflow=''; toast('Удалено'); render(); setTimeout(()=>gcBlobs(pics), 500); }catch(err){ toast('Не получилось удалить'); } return; }
-  if (t.dataset.newPerson!=null){ const inp=$('#newPerson'); const n=inp.value.trim(); if(!n) return; try{ const ref = await db.collection('people').add({name:n, createdAt:Date.now()}); (F.gifts ||= []).push({personId:ref.id, date:'', qty:1}); ED.saver.schedule(); setTimeout(rerenderEditor, 150); }catch(err){ toast('Не получилось добавить'); } return; }
-});
-function onSetSide(path, val){
-  const F = ED.form;
-  if (path==='type' && val==='granny' && !(F.stages||[]).some(s=>s.kind==='join')) (F.stages ||= []).push({id:uid(),kind:'join',hook:'',minutes:0});
-  if (path==='status' && val==='done' && !F.endDate) F.endDate = new Date().toISOString().slice(0,10);
-  if (path==='status' && val==='wip' && !F.startDate) F.startDate = new Date().toISOString().slice(0,10);
-}
-function stopTimer(){
-  const F = ED.form; if (!F.timer) return;
-  const add = Math.max(1, Math.round((Date.now()-F.timer.startedAt)/60000));
-  const st = (F.stages||[]).find(s=>s.id===F.timer.stageId);
-  if (st) st.minutes = num(st.minutes) + add;
-  F.timer = null; ED.saver.schedule(); ED.saver.flush(); toast(`+ ${fmtMin(add)} к этапу «${STAGES[st?.kind]||'этап'}»`); rerenderEditor();
-}
-
-// ---------- images ----------
-async function compress(file){
-  if (!/^image\/(jpeg|png|webp|heic|heif)$/.test(file.type) && file.type) { if (file.type==='image/gif') return file; }
-  try{
-    const url = URL.createObjectURL(file); const im = new Image(); im.src = url; await im.decode();
-    const max = 1800; let {naturalWidth:w, naturalHeight:h} = im; const k = Math.min(1, max/Math.max(w,h)); w=Math.round(w*k); h=Math.round(h*k);
-    const c = document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(im,0,0,w,h); URL.revokeObjectURL(url);
-    const isPng = file.type==='image/png';
-    return await new Promise(r=>c.toBlob(b=>r(b||file), isPng && file.size<1.5e6 ? 'image/png' : 'image/jpeg', 0.86));
-  }catch(e){ return file; }
-}
-async function handleFiles(input){
-  const key = input.dataset.img; const files = [...input.files]; input.value=''; if (!files.length || !ED) return;
-  if (!assets){ toast('Загрузка фото здесь недоступна'); return; }
-  const target = ED.kind==='yarn' ? null : (ED.form[key] ||= []);
-  setSave(`Загружаю фото (${files.length})…`);
-  for (const f of files){
-    try{ const blob = await compress(f); const r = await assets.upload(blob, blob.type?undefined:{type:'image/jpeg'});
-      if (!ED) return; if (ED.kind==='yarn') ED.form.photo = r.id; else target.push(r.id); ED.saver.schedule(); rerenderEditor(); }
-    catch(err){ toast(err?.code==='too_large'?'Фото слишком большое':err?.code==='quota_or_state'?'Место для фото закончилось':'Фото не загрузилось, попробуй ещё раз'); }
-  }
-}
-function imgSection(key, title, hint){
-  const arr = ED.form[key]||[];
-  return `<section class="sec"><div class="sec-h"><h2>${title}</h2><span class="hint">${arr.length||''}</span></div>${hint?`<div class="hint">${hint}</div>`:''}
-    <div class="imgs">${arr.map(id=>`<button class="im" data-lb="${id}" data-arr="${key}" aria-label="Открыть"><img src="${img(id)}" alt="" loading="lazy"></button>`).join('')}
-    ${assets?`<label class="add-img"><input type="file" accept="image/*" multiple data-img="${key}"><span><b style="font-size:22px;display:block">+</b>из галереи, скриншоты или камера</span></label>`:''}</div></section>`;
-}
-function openLightbox(id, arrKey){
-  $('#lb').innerHTML = `<div class="lb" role="dialog" aria-label="Просмотр фото"><div class="bar2"><button class="btn ghost sm" data-lb-close>Закрыть</button>${arrKey?`<button class="btn ghost sm" data-lb-rm="${id}" data-arr="${arrKey}">Убрать из карточки</button>`:''}</div><div class="stage"><img src="${img(id)}" alt=""></div><div id="lbConfirm"></div></div>`;
-}
-$('#lb').addEventListener('click', e => {
-  if (e.target.closest('[data-lb-close]') || e.target.classList.contains('stage')){ $('#lb').innerHTML=''; return; }
-  const rm = e.target.closest('[data-lb-rm]');
-  if (rm){ $('#lbConfirm').innerHTML = `<div class="confirm" style="margin:0 16px 16px"><span>Убрать это фото из карточки?</span><div class="row-top"><button class="btn danger sm" data-lb-yes="${rm.dataset.lbRm}" data-arr="${rm.dataset.arr}">Убрать</button><button class="btn ghost sm" data-lb-no>Отмена</button></div></div>`; return; }
-  if (e.target.closest('[data-lb-no]')){ $('#lbConfirm').innerHTML=''; return; }
-  const yes = e.target.closest('[data-lb-yes]');
-  if (yes && ED){ const a = ED.form[yes.dataset.arr]||[]; const i=a.indexOf(yes.dataset.lbYes); if (i>=0) a.splice(i,1); ED.saver.schedule(); $('#lb').innerHTML=''; rerenderEditor(); setTimeout(()=>gcBlobs([yes.dataset.lbYes]), 1500); }
-});
-
-// ---------- project editor ----------
-function openProject(id){
-  const src = id ? S.projects.find(p=>p.id===id) : null;
-  const form = src ? JSON.parse(JSON.stringify(src)) : {title:'', kind:'', type:'regular', status:'wip', startDate:new Date().toISOString().slice(0,10), endDate:'', copies:1, yarns:[{yarnId:'',skeins:''}], stages:[{id:uid(),kind:'knit',hook:'',minutes:0}], blocking:{done:false, method:''}, gifts:[], photos:[], patternImgs:[], refImgs:[]};
-  delete form.id;
-  ED = {kind:'project', id: id || uid(), form, created: !!src, saver: makeSaver('projects')}; ED.saver.ed = ED;
-  document.body.style.overflow='hidden';
-  drawProject();
-}
-function seg(path, opts, cur){ return `<div class="seg">${Object.entries(opts).map(([k,l])=>`<button type="button" data-set="${path}" data-val="${k}" aria-pressed="${cur===k}">${l}</button>`).join('')}</div>`; }
-function yarnOptions(sel){ return `<option value="">— выбери со склада —</option>` + S.yarns.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ru')).map(y=>`<option value="${y.id}" ${y.id===sel?'selected':''}>${esc(y.name||'Без названия')}${y.brand?' · '+esc(y.brand):''}</option>`).join(''); }
-function yarnHint(i){
-  const a = ED.form.yarns[i]; const y = yarnById(a?.yarnId); if (!y) return '';
-  const u = yarnUse(y.id, ED.id); const free = num(y.qty) - u.used - u.reserved; const mine = ED.form.yarns.filter(x=>x.yarnId===y.id).reduce((s,x)=>s+num(x.skeins),0);
-  const left = free - mine; const cost = num(a.skeins)*num(y.price);
-  return `<span class="hint ${left<0?'bad':''}">Всего ${fmtN(num(y.qty))} · в других изделиях ${fmtN(u.used+u.reserved)} · ${left<0?`не хватает ${fmtN(-left)} — попадёт в «Покупки»`:`останется свободно ${fmtN(left)}`}${cost?` · ${money(cost)}`:''}</span>`;
-}
-function updateHints(){ document.querySelectorAll('[data-yhint]').forEach(el=>el.innerHTML=yarnHint(+el.dataset.yhint)); const c=$('#costLine'); if (c) c.innerHTML = costLine(); }
-function costLine(){ const c = projCost(ED.form); return c ? `Себестоимость: <b>${money(c)}</b>` : ''; }
-function motifEstimate(F){
-  const y = (F.yarns||[])[0]?.yarnId; if (!y || !num(F.motifTarget)) return '';
-  const rates = S.projects.filter(p=>p.id!==ED.id && motifRate(p)>0 && (p.yarns||[])[0]?.yarnId===y).map(motifRate);
-  if (!rates.length) return `<div class="hint">Когда будут готовые мотивы из этой пряжи, здесь появится расчёт мотков.</div>`;
-  const avg = rates.reduce((a,b)=>a+b,0)/rates.length;
-  return `<div class="hint">По прошлым работам из этой пряжи выходит ≈ ${fmtN(avg)} шт. из мотка, значит, на ${num(F.motifTarget)} шт. нужно ≈ <b>${fmtN(Math.ceil(num(F.motifTarget)/avg*10)/10)}</b> мот.</div>`;
-}
-function drawProject(){
-  const F = ED.form;
-  const tot = totalMin(F);
-  const h = `<div class="sheet"><div class="sheet-head"><div class="in"><button class="icon-btn" data-close aria-label="Назад">${ICON.back}</button><h2 id="edTitle">${esc(F.title||'Новое изделие')}</h2><span class="save-st" id="saveSt">${ED.created?'Сохранено':''}</span></div></div>
-  <div class="sheet-body">
-    <section class="sec">
-      <label class="field"><span>Название</span><input type="text" id="f-title" data-f="title" value="${esc(F.title)}" placeholder="Например: Плед из квадратов для мамы"></label>
-      <div class="grid2">
-        <label class="field"><span>Что это</span><input type="text" id="f-kind" data-f="kind" value="${esc(F.kind)}" list="kinds" placeholder="Шапка, плед…"></label>
-        <label class="field"><span>Сколько одинаковых связала</span><input type="number" id="f-copies" inputmode="numeric" min="1" data-f="copies" value="${esc(F.copies??1)}"></label>
-      </div>
-      <div class="field"><span>Статус</span>${seg('status', STATUS, F.status)}</div>
-      <div class="field"><span>Тип</span>${seg('type', TYPES, F.type)}</div>
-      <div class="grid2">
-        <label class="field"><span>Начала</span><input type="date" id="f-start" data-f="startDate" value="${esc(F.startDate)}"></label>
-        <label class="field"><span>Закончила</span><input type="date" id="f-end" data-f="endDate" value="${esc(F.endDate)}"></label>
-      </div>
-    </section>
-
-    <section class="sec"><div class="sec-h"><h2>Пряжа</h2><button class="btn line sm" data-add="yarns">+ пряжа</button></div>
-      ${S.yarns.length?'':`<div class="hint">Склад пуст. Сначала добавь пряжу во вкладке «Пряжа», и она появится в списке.</div>`}
-      ${(F.yarns||[]).map((a,i)=>`<div class="row"><div class="row-top"><select id="f-y${i}" data-f="yarns.${i}.yarnId" data-rr>${yarnOptions(a.yarnId)}</select>${yarnById(a.yarnId)?`<button class="btn line sm" data-goto-yarn="${a.yarnId}">Открыть</button>`:''}<button class="x" data-del="yarns:${i}" aria-label="Убрать">×</button></div>
-        <div class="row-top"><label class="field"><span>Мотков ${F.status==='done'?'ушло':F.status==='plan'?'нужно':'беру'}</span><input type="number" id="f-ys${i}" inputmode="decimal" step="0.1" min="0" data-f="yarns.${i}.skeins" data-hints value="${esc(a.skeins)}" placeholder="2 или 1.5"></label></div>
-        <div data-yhint="${i}">${yarnHint(i)}</div></div>`).join('')}
-      <div class="hint" id="costLine">${costLine()}</div>
-    </section>
-
-    ${F.type==='granny'?`<section class="sec"><h2>Бабушкины квадраты</h2>
-      <div class="grid2"><label class="field"><span>Сколько квадратов</span><input type="number" id="f-gc" inputmode="numeric" data-f="grannyCount" value="${esc(F.grannyCount)}"></label>
-      <label class="field"><span>Размер квадрата, см</span><input type="text" id="f-gs" data-f="grannySize" value="${esc(F.grannySize)}" placeholder="10×10"></label></div>
-      <label class="check"><input type="checkbox" id="f-gp" data-f="grannyPinned" ${F.grannyPinned?'checked':''}> Ставила квадраты на закрепку</label>
-      <div class="hint">Время на вязание квадратов и на связывание между собой веди отдельными этапами ниже.</div></section>`:''}
-
-    ${F.type==='motif'?`<section class="sec"><h2>Мотивы</h2>
-      <div class="grid2"><label class="field"><span>Связано штук</span><input type="number" id="f-mc" inputmode="numeric" data-f="motifCount" data-rr value="${esc(F.motifCount)}"></label>
-      <label class="field"><span>Хочу связать (для плана)</span><input type="number" id="f-mt" inputmode="numeric" data-f="motifTarget" data-rr value="${esc(F.motifTarget)}"></label></div>
-      ${motifRate(F)?`<div class="hint">Из одного мотка: <b>${fmtN(motifRate(F))} шт.</b>${(()=>{const y=yarnById((F.yarns||[])[0]?.yarnId);return y&&num(y.weight)?` · ≈ ${fmtN(num(y.weight)/motifRate(F))} г на штуку`:''})()}</div>`:`<div class="hint">Укажи пряжу, мотки и количество штук, и я посчитаю, сколько выходит из мотка.</div>`}
-      ${motifEstimate(F)}</section>`:''}
-
-    <section class="sec"><div class="sec-h"><h2>Этапы, крючки и время</h2><span class="hint">всего <span id="totTime">${fmtMin(tot)}</span></span></div>
-      ${F.timer?`<div class="timer-on"><span>Идёт: ${STAGES[(F.stages||[]).find(s=>s.id===F.timer.stageId)?.kind]||'этап'} · <span data-tick="${F.timer.startedAt}"></span></span><button class="btn sm" data-timer-stop>Стоп</button></div>`:''}
-      ${(F.stages||[]).map((s,i)=>`<div class="row" data-stage-row><div class="row-top"><select id="f-sk${i}" data-f="stages.${i}.kind" data-rr>${Object.entries(STAGES).map(([k,l])=>`<option value="${k}" ${s.kind===k?'selected':''}>${l}</option>`).join('')}</select>${F.timer?'':`<button class="btn line sm" data-timer-start="${s.id}" aria-label="Запустить таймер">▶ таймер</button>`}<button class="x" data-del="stages:${i}" aria-label="Убрать этап">×</button></div>
-        <div class="grid2"><label class="field"><span>Крючок, мм</span><input type="text" id="f-sh${i}" inputmode="decimal" list="hooks" data-f="stages.${i}.hook" value="${esc(s.hook)}" placeholder="4"></label>
-        <div class="field"><span>Время</span><div class="hm"><input type="number" inputmode="numeric" min="0" id="f-th${i}" data-time="${i}" data-part="h" value="${Math.floor(num(s.minutes)/60)||''}" placeholder="0" aria-label="часы"> ч <input type="number" inputmode="numeric" min="0" id="f-tm${i}" data-time="${i}" data-part="m" value="${Math.round(num(s.minutes))%60||''}" placeholder="0" aria-label="минуты"> м</div></div></div></div>`).join('')}
-      <button class="btn line sm" data-add="stages" style="justify-self:start">+ этап</button>
-    </section>
-
-    <section class="sec"><h2>ВТО</h2>
-      <label class="check"><input type="checkbox" id="f-bd" data-f="blocking.done" data-rr ${F.blocking?.done?'checked':''}> Делала ВТО</label>
-      ${F.blocking?.done?`<div class="field"><span>Как</span>${seg('blocking.method', Object.fromEntries(BLOCK.map(b=>[b,b])), F.blocking?.method)}</div><div class="hint">Время на ВТО добавь этапом «ВТО» выше.</div>`:''}
-    </section>
-
-    ${imgSection('patternImgs','Схема','Скриншоты из Pinterest, фото из книги или журнала.')}
-    ${aiPatternBlock()}
-    <section class="sec">
-      <label class="field"><span>Ссылка на схему</span><input type="url" id="f-pl" data-f="patternLink" value="${esc(F.patternLink)}" placeholder="https://pinterest…"></label>
-      ${F.patternLink?`<a class="link-out" href="${esc(F.patternLink)}" target="_blank" rel="noopener">Открыть схему</a>`:''}
-      <label class="field"><span>Что нужно по схеме</span><textarea id="f-pi" data-f="patternInfo" placeholder="Пряжа и расход, обозначения, особенности">${esc(F.patternInfo)}</textarea></label>
-      <label class="field"><span>Что поменяла в схеме</span><textarea id="f-pn" data-f="patternNotes" placeholder="Убрала 2 ряда, обвязка рачьим шагом…">${esc(F.patternNotes)}</textarea></label>
-    </section>
-    ${imgSection('refImgs','Референсы','Картинки-вдохновение: цвета, похожие изделия.')}
-    ${imgSection('photos','Фото изделия','Первое фото станет обложкой карточки.')}
-
-    <section class="sec"><h2>Фурнитура и ткани</h2>
-      <label class="field"><span>Что использовала</span><textarea id="f-hw" data-f="hardware" placeholder="Пуговицы 15 мм — 5 шт, подклад из хлопка, глазки 10 мм">${esc(F.hardware)}</textarea></label>
-      <label class="field"><span>Сколько стоило, р.</span><input type="number" id="f-hwc" inputmode="decimal" data-f="hardwareCost" data-hints value="${esc(F.hardwareCost)}"></label>
-    </section>
-
-    <section class="sec"><h2>Размеры и плотность</h2>
-      <div class="grid2"><label class="field"><span>Размер готового</span><input type="text" id="f-sz" data-f="size" value="${esc(F.size)}" placeholder="120×150 см"></label>
-      <label class="field"><span>Плотность (образец)</span><input type="text" id="f-gg" data-f="gauge" value="${esc(F.gauge)}" placeholder="18 п × 20 р = 10 см"></label></div>
-    </section>
-
-    <section class="sec"><div class="sec-h"><h2>Кому подарено</h2><button class="btn line sm" data-add="gifts">+ подарок</button></div>
-      ${(F.gifts||[]).map((g,i)=>`<div class="row"><div class="row-top"><select id="f-gpp${i}" data-f="gifts.${i}.personId"><option value="">— кому —</option>${S.people.map(p=>`<option value="${p.id}" ${p.id===g.personId?'selected':''}>${esc(p.name)}</option>`).join('')}</select><button class="x" data-del="gifts:${i}" aria-label="Убрать">×</button></div>
-        <div class="grid2"><label class="field"><span>Когда</span><input type="date" id="f-gd${i}" data-f="gifts.${i}.date" value="${esc(g.date)}"></label><label class="field"><span>Сколько штук</span><input type="number" id="f-gq${i}" inputmode="numeric" min="1" data-f="gifts.${i}.qty" value="${esc(g.qty)}"></label></div></div>`).join('')}
-      <div class="row-top"><input type="text" id="newPerson" placeholder="Новый человек"><button class="btn ghost sm" data-new-person>Добавить</button></div>
-    </section>
-
-    <section class="sec"><h2>Заметки</h2><textarea id="f-notes" data-f="notes" placeholder="Что пошло не так, что сделать иначе в следующий раз">${esc(F.notes)}</textarea></section>
-
-    ${ED.created && F.status==='done' ? `<section class="sec"><div class="hint">Создаст план с той же схемой, пряжей и крючками. Фото этого изделия станет референсом.</div><button class="btn ghost" data-again style="justify-self:start">Связать ещё раз</button></section>` : ''}
-    <div id="delSlot"></div>
-    <button class="btn danger" data-del-ask style="justify-self:start">Удалить изделие</button>
-  </div></div>
-  <datalist id="hooks">${HOOKS.map(x=>`<option value="${x}">`).join('')}</datalist>
-  <datalist id="kinds">${KINDS.map(x=>`<option value="${x}">`).join('')}</datalist>`;
-  $('#sheet').innerHTML = h; tickAll();
-}
-
-// ---------- yarn editor ----------
-function openYarn(id){
-  const src = id ? S.yarns.find(y=>y.id===id) : null;
-  const form = src ? JSON.parse(JSON.stringify(src)) : {name:'', brand:'', composition:'', weight:'', length:'', colorName:'', color:'#C9B8D6', lot:'', hookRec:'', price:'', qty:'', link:'', notes:'', photo:''};
-  delete form.id;
-  ED = {kind:'yarn', id: id || uid(), form, created: !!src, saver: makeSaver('yarns')}; ED.saver.ed = ED;
-  document.body.style.overflow='hidden';
-  drawYarn();
-}
-function drawYarn(){
-  const F = ED.form; const b = ED.created ? yarnBalance({...F, id:ED.id}) : null;
-  const h = `<div class="sheet"><div class="sheet-head"><div class="in"><button class="icon-btn" data-close aria-label="Назад">${ICON.back}</button><h2 id="edTitle">${esc(F.name||'Новая пряжа')}</h2><span class="save-st" id="saveSt">${ED.created?'Сохранено':''}</span></div></div>
-  <div class="sheet-body">
-    ${aiYarnSection()}
-    ${b?`<div class="sum"><div class="tile"><span class="small muted">В шкафу</span><b>${fmtN(b.shelf)}</b></div><div class="tile"><span class="small muted">Свободно</span><b style="color:${b.free<0?'var(--warn)':'inherit'}">${fmtN(b.free)}</b></div></div>
-      ${b.where.length?`<section class="sec"><h2>Где используется</h2>${b.where.map(w=>`<div class="row-top"><span>${esc(w.p.title||'Без названия')} <span class="pill st-${w.p.status}">${STATUS[w.p.status]}</span></span><b>${fmtN(w.n)} мот.</b></div>`).join('')}</section>`:''}`:''}
-    <section class="sec">
-      <label class="field"><span>Название</span><input type="text" id="y-name" data-f="name" value="${esc(F.name)}" placeholder="Alize Cotton Gold"></label>
-      <div class="grid2"><label class="field"><span>Производитель</span><input type="text" id="y-brand" data-f="brand" value="${esc(F.brand)}"></label>
-      <label class="field"><span>Состав</span><input type="text" id="y-comp" data-f="composition" value="${esc(F.composition)}" placeholder="55% хлопок, 45% акрил"></label></div>
-      <div class="field"><span>Группа</span>${seg('group', {'':'Авто: ' + GROUPS[autoGroup(F)], ...GROUPS}, GROUPS[F.group] ? F.group : '')}</div>
-      <div class="grid2"><label class="field"><span>Вес мотка, г</span><input type="number" id="y-w" inputmode="decimal" data-f="weight" value="${esc(F.weight)}"></label>
-      <label class="field"><span>Длина мотка, м</span><input type="number" id="y-l" inputmode="decimal" data-f="length" value="${esc(F.length)}"></label></div>
-      <div class="grid2"><label class="field"><span>Цвет (номер/название)</span><input type="text" id="y-cn" data-f="colorName" value="${esc(F.colorName)}"></label>
-      <label class="field"><span>Партия</span><input type="text" id="y-lot" data-f="lot" value="${esc(F.lot)}" placeholder="№ партии с этикетки"></label></div>
-      <div class="grid2"><label class="field"><span>Оттенок для карточки</span><input type="color" id="y-color" data-f="color" value="${esc(F.color||'#C9B8D6')}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--bg)"></label>
-      <label class="field"><span>Крючок по этикетке, мм</span><input type="text" id="y-hook" inputmode="decimal" list="hooks" data-f="hookRec" value="${esc(F.hookRec)}"></label></div>
-    </section>
-    <section class="sec"><h2>Покупка</h2>
-      <div class="grid2"><label class="field"><span>Куплено мотков всего</span><input type="number" id="y-qty" inputmode="decimal" step="0.5" data-f="qty" value="${esc(F.qty)}"></label>
-      <label class="field"><span>Цена за моток, р.</span><input type="number" id="y-price" inputmode="decimal" data-f="price" value="${esc(F.price)}"></label></div>
-      <label class="field"><span>Ссылка на маркетплейс</span><input type="url" id="y-link" data-f="link" value="${esc(F.link)}" placeholder="https://"></label>
-      ${F.link?`<a class="link-out" href="${esc(F.link)}" target="_blank" rel="noopener">Открыть товар</a>`:''}
-    </section>
-    <section class="sec"><h2>Фото мотка</h2>
-      <div class="imgs">${F.photo?`<button class="im" data-lb="${F.photo}" aria-label="Открыть"><img src="${img(F.photo)}" alt=""></button>`:''}${assets?`<label class="add-img"><input type="file" accept="image/*" data-img="photo"><span><b style="font-size:22px;display:block">+</b>${F.photo?'заменить':'из галереи или камера'}</span></label>`:''}</div>
-    </section>
-    <section class="sec"><h2>Заметки</h2><textarea id="y-notes" data-f="notes" placeholder="Как ведёт себя в работе, линяет ли, как после стирки">${esc(F.notes)}</textarea></section>
-    <div id="delSlot"></div>
-    <button class="btn danger" data-del-ask style="justify-self:start">Удалить пряжу</button>
-  </div></div><datalist id="hooks">${HOOKS.map(x=>`<option value="${x}">`).join('')}</datalist>`;
-  $('#sheet').innerHTML = h;
-}
-
-function knitAgain(){
-  ED.saver.flush(); const F = ED.form;
-  const nf = {title:(F.title||'Изделие') + ' — ещё раз', kind:F.kind||'', type:F.type||'regular', status:'plan', startDate:'', endDate:'', copies:1,
-    yarns:(F.yarns||[]).map(a=>({yarnId:a.yarnId, skeins:a.skeins})), stages:(F.stages||[]).map(s=>({id:uid(), kind:s.kind, hook:s.hook||'', minutes:0})),
-    blocking:{done:!!F.blocking?.done, method:F.blocking?.method||''}, gifts:[], photos:[], patternImgs:[...(F.patternImgs||[])], refImgs:[...(F.photos||[]).slice(0,1), ...(F.refImgs||[])],
-    patternLink:F.patternLink||'', patternInfo:F.patternInfo||'', patternNotes:F.patternNotes||'', size:F.size||'', gauge:F.gauge||'', hardware:F.hardware||'',
-    grannyCount:F.grannyCount||'', grannySize:F.grannySize||'', motifTarget:F.motifCount||''};
-  ED = {kind:'project', id:uid(), form:nf, created:false, saver:makeSaver('projects')}; ED.saver.ed = ED; ED.saver.schedule();
-  drawProject(); const sh = $('#sheet .sheet'); if (sh) sh.scrollTop = 0; toast('Создала план по этому изделию');
-}
-// ---------- Claude autofill ----------
-const AI_ERR = c => ({not_granted:'Приложению не разрешено обращаться к Claude. Разрешение можно включить в меню артефакта.', rate_limited:'Лимит Claude сейчас исчерпан, попробуй позже.', image_rejected:'Эта картинка не подошла, попробуй другую (JPG или PNG).', invalid_json:'Ответ не получилось разобрать, попробуй ещё раз.', refused:'Claude не смог разобрать эту картинку.', session_expired:'Нужно заново войти в Claude.', sampling_disabled:'Claude недоступен для этого аккаунта.', images_unavailable:'Отправка картинок здесь недоступна.'}[c] || 'Не получилось распознать, попробуй ещё раз.');
-const YARN_PROMPT = 'На картинках этикетка пряжи или скриншот карточки пряжи с маркетплейса (часто на русском). Извлеки данные об ОДНОМ мотке. Ответь только JSON-объектом вида {"name":"Cotton Gold","brand":"Alize","composition":"55% хлопок, 45% акрил","weight":100,"length":330,"colorName":"№ 62","lot":null,"hookRec":"3-4","price":250,"colorHex":"#d8c3a5"}. name — название линейки без бренда; weight — граммы в одном мотке (число); length — метры в одном мотке (число); price — цена за один моток числом без валюты (если цена за упаковку из N мотков, раздели на N); hookRec — рекомендуемый крючок в мм; lot — номер партии, если виден; colorHex — примерный основной цвет пряжи на фото. Состав пиши по-русски. Если чего-то нет на картинке, ставь null. Ничего не выдумывай.';
-const PATTERN_PROMPT = 'На картинках схема или описание вязаного изделия (крючком или спицами), часто скриншот из Pinterest. Ответь только JSON-объектом: {"title":"...","kind":"...","type":"regular","hook":"4","size":"...","gauge":"...","info":"..."}. title — короткое название изделия по-русски; kind — что это, одним-двумя словами (шапка, плед, снежинка, салфетка); type — "granny", если изделие собирается из бабушкиных квадратов или других квадратных мотивов, "motif", если это отдельные мотивы вроде снежинок, иначе "regular"; hook — размер крючка в мм, если указан; size — размер готового изделия, если указан; gauge — плотность, если указана; info — по-русски 1–3 короткие строки: какая пряжа и сколько нужно по схеме, важные особенности. Если чего-то нет, ставь null. Ничего не выдумывай.';
-function aiYarnSection(){
-  if (!sampleImg) return '';
-  return `<section class="sec"><h2>Заполнить по фото</h2><div class="hint">Фото этикетки или скриншот товара с маркетплейса. Claude прочитает его и заполнит пустые поля, а ты проверишь.</div>${ED.aiBusy?`<button class="btn ghost" disabled style="justify-self:start">Распознаю…</button>`:`<label class="btn ghost" style="justify-self:start"><input type="file" accept="image/*" multiple data-ai="yarn" hidden>Выбрать фото или скриншот</label>`}${ED.aiMsg?`<div class="hint">${esc(ED.aiMsg)}</div>`:''}</section>`;
-}
-function aiPatternBlock(){
-  if (!sampleImg || !(ED.form.patternImgs||[]).length) return '';
-  return `<section class="sec"><div class="hint">Claude посмотрит на схему и заполнит пустые поля: название, тип, крючок, размер, плотность и что нужно по пряже.</div><button class="btn ghost" data-ai-pattern style="justify-self:start" ${ED.aiBusy?'disabled':''}>${ED.aiBusy?'Разбираю схему…':'Разобрать схему'}</button>${ED.aiMsg?`<div class="hint">${esc(ED.aiMsg)}</div>`:''}</section>`;
-}
-function fillEmpty(F, key, val, label, got){ if (val==null || String(val).trim()==='' || String(val)==='null') return; if (String(F[key]??'').trim()) return; F[key] = typeof val==='string' ? val.trim() : val; got.push(label); }
-const posNum = v => { const x = num(v); return x>0 ? x : null; };
-async function runAiYarn(input){
-  const files = [...input.files].slice(0, maxImg); input.value='';
-  if (!files.length || !ED || ED.aiBusy || !sample) return;
-  const my = ED; my.aiBusy = true; my.aiMsg = 'Claude смотрит на фото, обычно это несколько секунд.'; rerenderEditor();
-  try{
-    const blobs = await Promise.all(files.map(compress));
-    const r = await sample.json(YARN_PROMPT, {images: blobs, modelTier:'quick'}) || {};
-    if (ED!==my) return;
-    const F = my.form, got = [];
-    fillEmpty(F,'name',r.name,'название',got); fillEmpty(F,'brand',r.brand,'производитель',got); fillEmpty(F,'composition',r.composition,'состав',got);
-    fillEmpty(F,'weight',posNum(r.weight),'вес',got); fillEmpty(F,'length',posNum(r.length),'длина',got); fillEmpty(F,'colorName',r.colorName,'цвет',got);
-    fillEmpty(F,'lot',r.lot,'партия',got); fillEmpty(F,'hookRec',r.hookRec,'крючок',got); fillEmpty(F,'price',posNum(r.price),'цена',got);
-    if (/^#[0-9a-f]{6}$/i.test(r.colorHex||'') && (!F.color || F.color==='#C9B8D6')){ F.color = r.colorHex; got.push('оттенок'); }
-    if (!F.photo && assets){ try{ const up = await assets.upload(blobs[0]); F.photo = up.id; got.push('фото'); }catch(e){} }
-    my.aiMsg = got.length ? 'Заполнила: ' + got.join(', ') + '. Проверь, всё ли верно.' : 'Новых данных не нашлось: поля уже заполнены или на картинке этого нет.';
-    if (got.length) my.saver.schedule();
-  }catch(e){ my.aiMsg = AI_ERR(e?.code); }
-  my.aiBusy = false; if (ED===my) rerenderEditor();
-}
-async function runAiPattern(){
-  if (!ED || ED.aiBusy || !sample) return;
-  const my = ED; const ids = (my.form.patternImgs||[]).slice(0, maxImg);
-  my.aiBusy = true; my.aiMsg = 'Claude разбирает схему, это может занять до минуты.'; rerenderEditor();
-  try{
-    const blobs = [];
-    for (const id of ids){ const res = await fetch(img(id)); if (!res.ok) throw {code:'fetch'}; blobs.push(await res.blob()); }
-    const r = await sample.json(PATTERN_PROMPT, {images: blobs}) || {};
-    if (ED!==my) return;
-    const F = my.form, got = [];
-    fillEmpty(F,'title',r.title,'название',got); fillEmpty(F,'kind',r.kind,'что это',got);
-    if ((F.type||'regular')==='regular' && (r.type==='granny'||r.type==='motif')){ F.type = r.type; onSetSide('type', r.type); got.push('тип: ' + TYPES[r.type]); }
-    if (r.hook && String(r.hook)!=='null'){ const st = (F.stages||[]).find(s=>s.kind==='knit' && !String(s.hook||'').trim()) || (F.stages||[]).find(s=>!String(s.hook||'').trim()); if (st){ st.hook = String(r.hook).replace(/\s*мм$/,''); got.push('крючок'); } }
-    fillEmpty(F,'size',r.size,'размер',got); fillEmpty(F,'gauge',r.gauge,'плотность',got); fillEmpty(F,'patternInfo',r.info,'что нужно по схеме',got);
-    my.aiMsg = got.length ? 'Заполнила: ' + got.join(', ') + '. Проверь, всё ли верно.' : 'Новых данных не нашлось: поля уже заполнены или на схеме этого нет.';
-    if (got.length) my.saver.schedule();
-  }catch(e){ my.aiMsg = e?.code==='fetch' ? 'Не получилось открыть картинку схемы, попробуй ещё раз.' : AI_ERR(e?.code); }
-  my.aiBusy = false; if (ED===my) rerenderEditor();
-}
-
-// ---------- timers ----------
-function tickAll(){ const now=Date.now(); document.querySelectorAll('[data-tick]').forEach(el=>el.textContent=fmtClock(now-num(el.dataset.tick))); }
-setInterval(tickAll, 1000);
-
-// ---------- local storage on this device (IndexedDB) ----------
+// ================= local storage (IndexedDB) =================
 const URLS = {};
+const img = id => URLS[id] || '';
 const LS = (() => {
   let dbp = null;
   const open = () => dbp || (dbp = new Promise((res, rej) => {
@@ -745,97 +436,776 @@ const LS = (() => {
     clearAll: async () => { await tx('docs','readwrite', s => s.clear()); await tx('blobs','readwrite', s => s.clear()); }
   };
 })();
-const MEM = {projects:new Map(), yarns:new Map(), people:new Map(), shop:new Map()};
-const LISTEN = {projects:[], yarns:[], people:[], shop:[]};
+const COLLS = ['projects','yarns','people','shop','ideas','meta'];
+const MEM = Object.fromEntries(COLLS.map(c=>[c,new Map()]));
+const LISTEN = Object.fromEntries(COLLS.map(c=>[c,[]]));
 const clone = o => JSON.parse(JSON.stringify(o));
-function emit(c){ const docs = [...MEM[c]].map(([id, d]) => ({id, exists:true, data:() => d})); const snap = {docs, size:docs.length, empty:!docs.length, metadata:{fromCache:false, hasPendingWrites:false}}; queueMicrotask(() => LISTEN[c].forEach(fn => fn(snap))); }
+function emit(c){ const docs = [...MEM[c]].map(([id, d]) => ({id, data:() => d})); queueMicrotask(() => LISTEN[c].forEach(fn => fn({docs}))); }
 function docRef(c, id){
-  return {
-    id,
+  return { id,
     async set(d){ const v = clone(d); await LS.putDoc(c, id, v); MEM[c].set(id, v); emit(c); },
-    async update(d){ const cur = MEM[c].get(id); if (!cur) throw {code:'invalid_argument'}; const v = {...cur, ...clone(d)}; await LS.putDoc(c, id, v); MEM[c].set(id, v); emit(c); },
-    async delete(){ await LS.delDoc(c, id); MEM[c].delete(id); emit(c); }
-  };
+    async update(d){ const cur = MEM[c].get(id); if (!cur) throw {code:'missing'}; const v = {...cur, ...clone(d)}; await LS.putDoc(c, id, v); MEM[c].set(id, v); emit(c); },
+    async delete(){ await LS.delDoc(c, id); MEM[c].delete(id); emit(c); } };
 }
-const localDb = {
-  collection: c => ({
-    doc: id => docRef(c, id || uid()),
-    add: async d => { const r = docRef(c, uid()); await r.set(d); return r; },
-    onSnapshot: fn => { LISTEN[c].push(fn); emit(c); return () => { LISTEN[c] = LISTEN[c].filter(x => x !== fn); }; }
-  })
+const db = { collection: c => ({ doc: id => docRef(c, id || uid()), add: async d => { const r = docRef(c, uid()); await r.set(d); return r; }, onSnapshot: fn => { LISTEN[c].push(fn); emit(c); } }) };
+const assets = {
+  async upload(blob){ const id = uid().replace(/-/g,''); await LS.putBlob(id, blob); URLS[id] = URL.createObjectURL(blob); return {id, url:URLS[id]}; },
+  async delete(id){ await LS.delBlob(id); if (URLS[id]) URL.revokeObjectURL(URLS[id]); delete URLS[id]; }
 };
-const localAssets = {
-  async upload(blob){ const id = uid().replace(/-/g,''); await LS.putBlob(id, blob); URLS[id] = URL.createObjectURL(blob); return {id, url:URLS[id], sizeBytes:blob.size, contentType:blob.type}; },
-  async delete(id){ await LS.delBlob(id); if (URLS[id]) URL.revokeObjectURL(URLS[id]); delete URLS[id]; return {deleted:true}; }
-};
+async function compress(file){
+  try{
+    const url = URL.createObjectURL(file); const im = new Image(); im.src = url; await im.decode();
+    const max = 1600; let w = im.naturalWidth, h = im.naturalHeight; const k = Math.min(1, max/Math.max(w,h)); w=Math.round(w*k); h=Math.round(h*k);
+    const c = document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(im,0,0,w,h); URL.revokeObjectURL(url);
+    return await new Promise(r=>c.toBlob(b=>r(b||file), 'image/jpeg', 0.84));
+  }catch(e){ return file; }
+}
+async function uploadPhoto(file){ const blob = await compress(file); const r = await assets.upload(blob); return {id:r.id, blob}; }
 // remove photos nothing points at any more
 async function gcBlobs(ids){
   const used = new Set();
   for (const p of MEM.projects.values()) for (const k of ['photos','patternImgs','refImgs']) (p[k]||[]).forEach(x => used.add(x));
   for (const y of MEM.yarns.values()) if (y.photo) used.add(y.photo);
-  if (ED){ const F = ED.form; for (const k of ['photos','patternImgs','refImgs']) (F[k]||[]).forEach(x => used.add(x)); if (F.photo) used.add(F.photo); }
-  for (const id of ids) if (id && !used.has(id)) { try{ await localAssets.delete(id); }catch(e){} }
+  for (const fr of STACK) if (fr.ed){ const F = fr.ed.form; for (const k of ['photos','patternImgs','refImgs']) (F[k]||[]).forEach(x => used.add(x)); if (F.photo) used.add(F.photo); }
+  for (const id of ids) if (id && !used.has(id)) { try{ await assets.delete(id); }catch(e){} }
 }
 
-// ---------- backup ----------
+// ================= state & derived =================
+const S = {projects:[], yarns:[], people:[], shop:[], ideas:[], tab:'shelf', doneCat:'all', loaded:false, err:null, shopOpen:false};
+const STACK = []; // sheet frames: {t:'view', kind, id} | {t:'edit', ed}
+let ED = null;
+const yarnById = id => S.yarns.find(y => y.id === id);
+const projById = id => S.projects.find(p => p.id === id);
+const personById = id => S.people.find(p => p.id === id);
+function yarnUse(yid, excludeProjectId){
+  let used=0, reserved=0; const where=[];
+  for (const p of S.projects){ if (p.id === excludeProjectId) continue;
+    for (const a of (p.yarns||[])) if (a.yarnId === yid && num(a.skeins)>0){ if (p.status==='done') used += num(a.skeins); else reserved += num(a.skeins); where.push({p, n:num(a.skeins)}); } }
+  return {used, reserved, where};
+}
+function yarnBalance(y){ const u = yarnUse(y.id); const qty=num(y.qty); return {...u, qty, shelf: qty-u.used, free: qty-u.used-u.reserved}; }
+const totalMin = p => (p.stages||[]).reduce((s,x)=>s+num(x.minutes),0) + (p.parts||[]).reduce((s,x)=>s+num(x.minutes),0);
+function projCost(p){ let c=0; for (const a of (p.yarns||[])){ const y=yarnById(a.yarnId); if (y) c += num(a.skeins)*num(y.price); } return c + num(p.hardwareCost); }
+const projSkeins = p => (p.yarns||[]).reduce((s,a)=>s+num(a.skeins),0);
+const motifRate = p => { const sk=projSkeins(p); return (p.type==='motif' && sk>0 && num(p.motifCount)>0) ? num(p.motifCount)/sk : 0; };
+const hooksOf = p => [...new Set((p.stages||[]).map(s=>String(s.hook||'').trim()).filter(Boolean))];
+const cover = p => (p.photos||[])[0] || (p.refImgs||[])[0] || (p.patternImgs||[])[0];
+function progressOf(p){
+  if (p.type==='granny' && num(p.grannyCount)>0) return Math.min(1, num(p.grannyDone)/num(p.grannyCount));
+  if (p.type==='parts' && (p.parts||[]).length) return p.parts.filter(x=>x.done).length / p.parts.length;
+  if (p.type==='motif' && num(p.motifTarget)>0) return Math.min(1, num(p.motifCount)/num(p.motifTarget));
+  return null;
+}
+function progressText(p){
+  if (p.type==='granny' && num(p.grannyCount)>0) return `${num(p.grannyDone)} из ${num(p.grannyCount)} квадр.`;
+  if (p.type==='parts' && (p.parts||[]).length) return `${p.parts.filter(x=>x.done).length} из ${p.parts.length} дет.`;
+  if (p.type==='motif') return num(p.motifTarget)>0 ? `${num(p.motifCount)} из ${num(p.motifTarget)} шт.` : `${num(p.motifCount)} шт.`;
+  return '';
+}
+function shoppingNeeds(){
+  const out=[];
+  for (const y of S.yarns){ const b=yarnBalance(y); if (b.free<0) out.push({y, n:-b.free, for:b.where.filter(w=>w.p.status!=='done').map(w=>w.p.title||catInfo(catOf(w.p)).name)}); }
+  return out;
+}
+function basketState(p){
+  const rows = (p.yarns||[]).filter(a=>a.yarnId && yarnById(a.yarnId));
+  if (!rows.length) return {cls:'nil', t:'пряжа не выбрана'};
+  let need = 0;
+  for (const a of rows){ const y = yarnById(a.yarnId); const u = yarnUse(y.id, p.id); const free = num(y.qty) - u.used - u.reserved; const mine = rows.filter(r=>r.yarnId===y.id).reduce((s,r)=>s+num(r.skeins),0); if (free - mine < 0) need = Math.max(need, mine - free); }
+  if (need > 0) return {cls:'need', t:`докупить ${fmtN(need)} ${plural(need,'моток','мотка','мотков')}`};
+  const tot = projSkeins(p);
+  return {cls:'ok', t:`пряжа есть · ${fmtN(tot)} ${plural(tot,'моток','мотка','мотков')}`};
+}
+
+// ================= tabs & main views =================
+const TABS = [['shelf','Шкаф','shelf'],['plans','Планы','basket'],['now','Вяжу','now'],['done','Готовое','house']];
+function renderTabs(){
+  $('#tabs').innerHTML = TABS.map(([k,l,i]) => { const on = S.tab===k; return `<button data-tab="${k}" ${on?'aria-current="page"':''}>${icon(i, on?'var(--red)':'var(--mut)', 'var(--surface)')}<span>${l}</span></button>`; }).join('');
+}
+function render(){
+  renderTabs();
+  const t = {shelf:'Шкаф', plans:'Планы', now:'Вяжу', done:'Готовое'}[S.tab];
+  $('#ttl').textContent = t;
+  const m = $('#main');
+  if (S.err){ m.innerHTML = `<div class="empty"><p>${esc(S.err)}</p></div>`; return; }
+  if (!S.loaded){ m.innerHTML = `<div class="empty"><p>Открываю твои записи…</p></div>`; return; }
+  const c = $('#cnt'); let cnt = '';
+  if (S.tab==='shelf'){ const n = S.yarns.reduce((s,y)=>s+Math.max(0,yarnBalance(y).shelf),0); cnt = n ? `${fmtN(n)} ${plural(n,'моток','мотка','мотков')}` : ''; }
+  if (S.tab==='plans'){ const n = S.projects.filter(p=>p.status==='plan').length; cnt = n ? `${n} ${plural(n,'корзинка','корзинки','корзинок')}` : ''; }
+  if (S.tab==='done'){ const n = S.projects.filter(p=>p.status==='done').length; cnt = n ? `${n} ${plural(n,'работа','работы','работ')}` : ''; }
+  c.textContent = cnt; c.hidden = !cnt;
+  m.innerHTML = ({shelf:viewShelf, plans:viewPlans, now:viewNow, done:viewDone})[S.tab]();
+  tickAll();
+}
+document.addEventListener('click', e => { const t = e.target.closest('[data-tab]'); if (t){ S.tab = t.dataset.tab; window.scrollTo(0,0); render(); } });
+
+// ---- Шкаф
+function viewShelf(){
+  if (!S.yarns.length) return `<div class="empty">${ballSVG('wool',['#FF5A36']).replace('<svg','<svg style="width:90px;height:90px;overflow:visible"')}<h2>Шкаф пока пуст</h2><p>Сфоткай моток — и он появится на полке. Название и состав можно дописать потом, а можно и не дописывать.</p><button class="btn red" data-quick-yarn>Сфоткать пряжу</button></div>`;
+  const all = S.yarns.map(y=>({y, b:yarnBalance(y)})).sort((a,b)=> (a.y.createdAt||0)-(b.y.createdAt||0));
+  let h = '';
+  for (const g of Object.keys(GROUPS)){
+    const list = all.filter(x => yarnGroup(x.y)===g && (x.b.shelf>0 || x.b.reserved>0));
+    if (!list.length) continue;
+    h += `<div class="shelf"><div class="h3"><i style="background:${GROUP_COL[g]}"></i>${GROUPS[g]}</div>`;
+    for (let i=0;i<list.length;i+=4) h += `<div class="srow">${list.slice(i,i+4).map(ballBtn).join('')}</div><div class="board"></div>`;
+    h += `</div>`;
+  }
+  const gone = all.filter(x => x.b.shelf<=0 && x.b.reserved<=0);
+  if (gone.length){
+    h += `<div class="shelf"><div class="h3"><i style="background:var(--mut)"></i>Закончилась</div>`;
+    for (let i=0;i<gone.length;i+=4) h += `<div class="srow">${gone.slice(i,i+4).map(ballBtn).join('')}</div><div class="board" style="opacity:.35"></div>`;
+    h += `</div>`;
+  }
+  return h;
+}
+function ballBtn({y,b}){
+  const resv = b.where.find(w=>w.p.status!=='done');
+  const tag = resv ? (() => { const ci = catInfo(catOf(resv.p)); return `<span class="tag" title="Отложено">${icon(ci.icon,'#fff','#111')}</span>`; })() : '';
+  const q = b.shelf<=0 ? '0' : b.reserved>0 ? (b.free>0 ? `×${fmtN(b.free)}` : 'отложено') : `×${fmtN(b.shelf)}`;
+  return `<button class="yb ${b.free<=0 && b.shelf>0 ? 'out' : (b.shelf<=0 ? 'out':'')}" data-view-yarn="${y.id}" aria-label="${esc(y.name||'Пряжа')}">${tag}${yarnBall(y)}<span class="q">${q}</span></button>`;
+}
+
+// ---- Планы
+function viewPlans(){
+  const plans = S.projects.filter(p=>p.status==='plan').sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  let h = `<div class="grid2">${plans.map(basketCard).join('')}<button class="bk new" data-quick="plan"><b>+</b>новая идея<br><span style="font-size:11.5px">закинь скрин из Pinterest</span></button></div>`;
+  const needs = shoppingNeeds(); const manual = S.shop.filter(s=>!s.done);
+  const sum = needs.reduce((s,n)=>s+n.n*num(n.y.price),0);
+  const label = needs.length || manual.length ? `${needs.length ? `${fmtN(needs.reduce((s,n)=>s+n.n,0))} мот.` : ''}${needs.length && manual.length ? ' + ' : ''}${manual.length ? `${manual.length} в списке` : ''}${sum ? ' · ' + money(sum) : ''}` : 'всё есть';
+  h += `<button class="strip" data-shop-toggle><span>Купить под планы</span><b>${label}</b></button>`;
+  if (S.shopOpen) h += shopBlock(needs);
+  return h;
+}
+function basketCard(p){
+  const ci = catInfo(catOf(p)); const c = cover(p); const st = basketState(p);
+  const ys = (p.yarns||[]).map(a=>yarnById(a.yarnId)).filter(Boolean).slice(0,4);
+  const gift = (p.gifts||[]).map(g=>personById(g.personId)?.name).filter(Boolean)[0];
+  const fg = LIGHT(ci.color)?'#111':'#fff';
+  return `<button class="bk" data-view-project="${p.id}">${gift?`<span class="bow">подарок · ${esc(gift)}</span>`:''}<div class="ref" style="background:${ci.color}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:icon(ci.icon,fg,ci.color)}</div>
+    <div class="basket">${ys.map((y,i)=>`<span class="mini" style="left:${18+i*26}px">${yarnBall(y)}</span>`).join('')}<div class="bb"></div></div>
+    <div class="t"><b>${esc(p.title||ci.name)}</b><span class="${st.cls}">${st.t}</span></div></button>`;
+}
+function shopBlock(needs){
+  let h = `<div style="display:grid;gap:8px;margin-top:10px">`;
+  h += needs.map(({y,n,for:f})=>`<div class="shop-item"><button class="yb" style="padding:0;width:48px" data-view-yarn="${y.id}">${yarnBall(y).replace('<svg','<svg style="width:44px;height:44px"')}</button><div class="t"><b>${esc(y.name||'Пряжа без названия')}</b> — ${fmtN(n)} мот.${num(y.price)?` · ${money(n*num(y.price))}`:''}<div class="hint">для: ${esc(f.join(', '))}</div>${y.link?`<a class="link-out" href="${esc(y.link)}" target="_blank" rel="noopener">открыть товар ↗</a>`:''}</div><button class="btn sm" data-bought="${y.id}" data-n="${n}">Купила</button></div>`).join('');
+  const items = S.shop.slice().sort((a,b)=>(a.done-b.done)||((a.createdAt||0)-(b.createdAt||0)));
+  h += items.map(s=>`<div class="shop-item ${s.done?'done':''}"><label class="check"><input type="checkbox" data-shop-done="${s.id}" ${s.done?'checked':''} aria-label="Куплено"></label><div class="t">${esc(s.text)}${s.qty?` <span class="muted">· ${esc(s.qty)}</span>`:''}${s.forId&&projById(s.forId)?`<div class="hint">для: ${esc(projById(s.forId).title||'план')}</div>`:''}${s.link?`<a class="link-out" href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.link)}</a>`:''}</div><button class="x" data-shop-del="${s.id}" aria-label="Убрать">×</button></div>`).join('');
+  const plans = S.projects.filter(p=>p.status!=='done');
+  h += `<form class="sec" id="shopForm"><h4>Добавить в список</h4><input type="text" id="shopText" placeholder="Пуговицы 15 мм, подклад…"><div class="grid2f"><input type="text" id="shopQty" placeholder="Сколько"><select id="shopFor"><option value="">для чего —</option>${plans.map(p=>`<option value="${p.id}">${esc(p.title||catInfo(catOf(p)).name)}</option>`).join('')}</select></div><input type="url" id="shopLink" placeholder="Ссылка (необязательно)"><button class="btn" type="submit">Добавить</button></form>`;
+  return h + `</div>`;
+}
+
+// ---- Вяжу
+function viewNow(){
+  const wip = S.projects.filter(p=>p.status==='wip').sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  const frozen = S.projects.filter(p=>p.status==='frozen');
+  if (!wip.length && !frozen.length) return `<div class="empty">${icon('now','var(--red)','var(--surface)').replace('<svg','<svg style="width:70px;height:70px"')}<h2>Сейчас ничего не вяжется</h2><p>Начни из корзинки в «Планах» или добавь то, что уже на крючке.</p><button class="btn red" data-quick="wip">Добавить</button></div>`;
+  let h = wip.map(wipCard).join('');
+  if (frozen.length) h += `<div class="h3"><i style="background:var(--mut)"></i>На паузе</div>` + frozen.map(wipCard).join('');
+  return h;
+}
+function wipCard(p){
+  const ci = catInfo(catOf(p)); const c = cover(p); const pr = progressOf(p); const fg = LIGHT(ci.color)?'#111':'#fff';
+  return `<div class="wc"><button class="im" style="background:${ci.color}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:icon(ci.icon,fg,ci.color)}</button>
+   <button class="mid" data-view-project="${p.id}"><b>${esc(p.title||ci.name)}</b>${pr!=null?`<div class="bar"><i style="width:${Math.round(pr*100)}%"></i></div>`:''}<span class="meta">${progressText(p)?`<span>${progressText(p)}</span>`:''}<span>${fmtH(totalMin(p))}</span>${hooksOf(p).length?`<span>крючок ${esc(hooksOf(p).join(' / '))}</span>`:''}</span></button>
+   <button class="tbtn ${p.timer?'on':''}" data-qt="${p.id}" aria-label="${p.timer?'Остановить таймер':'Запустить таймер'}">${p.timer?`<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg><span class="tick" data-tick="${p.timer.startedAt}"></span>`:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"/></svg>старт`}</button></div>`;
+}
+
+
+// ---- scene in «Готовое»: tap a thing → filter by its category
+function sceneSVG(counts, sel){
+  const has = k => (counts[k]||0) > 0;
+  const st = k => has(k) ? `fill:${catInfo(k).color};stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round` : `fill:var(--soft);stroke:var(--mut);stroke-width:1.5;stroke-dasharray:4 3;stroke-linejoin:round`;
+  const badge = (k,x,y) => { if (!has(k)) return ''; const t = '×'+counts[k]; const w = 12 + t.length*6.5; return `<g class="bd" pointer-events="none"><rect x="${x}" y="${y}" width="${w}" height="17" rx="8.5" style="fill:var(--ink)"/><text x="${x+w/2}" y="${y+12.5}" text-anchor="middle" style="fill:var(--bg);font:700 11px var(--f-b)">${t}</text></g>`; };
+  const g = (k, inner) => `<g data-scene="${k}" class="sc${sel===k?' on':''}" role="button" tabindex="0" aria-label="${esc(catInfo(k).name)}: ${counts[k]||0}">${inner}</g>`;
+  const flake = (x,y,s,col) => `<g transform="translate(${x} ${y}) scale(${s})" style="fill:none;stroke:${col};stroke-width:3;stroke-linecap:round"><path d="M0 -10V10M-8.7 -5L8.7 5M-8.7 5L8.7 -5"/></g>`;
+  const snowCol = has('snow') ? '#fff' : 'var(--mut)';
+  return `<svg viewBox="0 0 340 236" role="img" aria-label="Что я связала">
+  <rect width="340" height="236" style="fill:var(--surface)"/>
+  <rect x="0" y="196" width="340" height="40" style="fill:var(--yel)"/><path d="M0 196H340" style="stroke:var(--ink);stroke-width:3"/>
+  ${g('snow', `<rect x="16" y="18" width="92" height="104" style="${has('snow')?'fill:var(--blue);stroke:var(--ink);stroke-width:3':'fill:var(--soft);stroke:var(--mut);stroke-width:1.5;stroke-dasharray:4 3'}"/><path d="M62 18V122M16 70H108" style="stroke:${has('snow')?'var(--ink)':'var(--mut)'};stroke-width:3"/>${flake(38,42,1,snowCol)}${flake(86,50,.8,snowCol)}${flake(40,96,.7,snowCol)}${flake(88,98,1.1,snowCol)}`)}
+  ${g('vest', `<path d="M268 14v8" style="stroke:var(--ink);stroke-width:2"/><path d="M252 30l16-8 16 8" style="fill:none;stroke:var(--ink);stroke-width:2"/><path d="M256 30c3 8 7 11 12 11s9-3 12-11l9 7-4 11v32h-34V48l-4-11z" style="${st('vest')}"/>`)}
+  <rect x="246" y="104" width="76" height="62" style="fill:var(--line);stroke:var(--ink);stroke-width:2.5"/><rect x="240" y="150" width="88" height="22" style="fill:var(--line);stroke:var(--ink);stroke-width:2.5"/><path d="M248 172v22M320 172v22" style="stroke:var(--ink);stroke-width:4"/>
+  ${g('shawl', `<path d="M252 100h64l-32 44z" style="${st('shawl')}"/><path d="M266 100l18 24 18-24" style="fill:none;stroke:${has('shawl')?'var(--ink)':'var(--mut)'};stroke-width:1.5"/>`)}
+  ${g('plaid', `<path d="M244 146h80v34l-8 8h-64l-8-8z" style="${st('plaid')}"/><path d="M244 159h80M244 171h80M270 146v42M298 146v42" style="stroke:${has('plaid')?'rgba(0,0,0,.35)':'var(--mut)'};stroke-width:1.5"/>`)}
+  <ellipse cx="74" cy="200" rx="50" ry="9" style="fill:var(--pink);stroke:var(--ink);stroke-width:2"/>
+  ${g('cat', `<path d="M96 196c8-2 14-10 10-20" style="fill:none;stroke:var(--ink);stroke-width:4;stroke-linecap:round"/><ellipse cx="76" cy="184" rx="24" ry="13" style="${st('cat')}"/><circle cx="52" cy="170" r="12" style="${st('cat')}"/><path d="M43 162l2-11 7 6M61 162l-2-11-7 6" style="${st('cat')}"/><circle cx="48" cy="170" r="1.6" style="fill:var(--ink)"/><circle cx="56" cy="170" r="1.6" style="fill:var(--ink)"/>`)}
+  <rect x="156" y="160" width="12" height="30" style="fill:var(--ink)"/><rect x="172" y="160" width="12" height="30" style="fill:var(--ink)"/>
+  ${g('sock', `<path d="M154 184h16v12h-22v-5a7 7 0 016-7z" style="${st('sock')}"/><path d="M170 184h16v12h-16z" style="${st('sock')}"/><path d="M186 190a6 6 0 010 6" style="fill:none"/>`)}
+  <rect x="146" y="94" width="48" height="70" style="fill:var(--line);stroke:var(--ink);stroke-width:2.5"/>
+  <rect x="132" y="96" width="14" height="58" style="fill:var(--line);stroke:var(--ink);stroke-width:2.5"/><rect x="194" y="96" width="14" height="58" style="fill:var(--line);stroke:var(--ink);stroke-width:2.5"/>
+  ${g('card', `<path d="M146 94h22l-2 70h-20z" style="${st('card')}"/><path d="M194 94h-22l2 70h20z" style="${st('card')}"/><rect x="132" y="96" width="14" height="50" style="${st('card')}"/><rect x="194" y="96" width="14" height="50" style="${st('card')}"/>`)}
+  ${g('mit', `<path d="M131 148h16v14c0 6-3 10-8 10s-8-4-8-10z" style="${st('mit')}"/><path d="M147 154l5-2 1 6-6 3" style="${st('mit')}"/>`)}
+  ${g('mitts', `<rect x="193" y="146" width="16" height="16" style="${st('mitts')}"/><path d="M195 162h12v6h-12z" style="fill:#F2C9A8;stroke:var(--ink);stroke-width:2"/>`)}
+  <circle cx="170" cy="72" r="19" style="fill:#F2C9A8;stroke:var(--ink);stroke-width:2.5"/><circle cx="163" cy="74" r="1.8" style="fill:var(--ink)"/><circle cx="177" cy="74" r="1.8" style="fill:var(--ink)"/><path d="M165 82q5 3 10 0" style="fill:none;stroke:var(--ink);stroke-width:1.8"/>
+  ${g('scarf', `<rect x="150" y="87" width="40" height="11" style="${st('scarf')}"/><path d="M176 96h11v38l-11-3z" style="${st('scarf')}"/>`)}
+  ${g('hat', `<path d="M150 64a20 20 0 0140 0z" style="${st('hat')}"/><rect x="148" y="60" width="44" height="9" style="${st('hat')}"/><circle cx="170" cy="42" r="6" style="${st('hat')}"/>`)}
+  ${g('bag', `<path d="M216 168h30l-3 28h-24z" style="${st('bag')}"/><path d="M223 168v-6a8 8 0 0116 0v6" style="fill:none;stroke:${has('bag')?'var(--ink)':'var(--mut)'};stroke-width:2.5"/>`)}
+  ${badge('snow',70,6)}${badge('vest',294,24)}${badge('shawl',300,94)}${badge('plaid',282,206)}${badge('cat',18,150)}${badge('sock',176,208)}${badge('card',104,116)}${badge('mit',108,170)}${badge('mitts',214,140)}${badge('scarf',106,84)}${badge('hat',196,36)}${badge('bag',250,174)}
+  </svg>`;
+}
+function doneCounts(){ const counts = {}; S.projects.filter(p=>p.status==='done').forEach(p=>{ const c=catOf(p); counts[c]=(counts[c]||0)+Math.max(1,num(p.copies)||1); }); return counts; }
+
+// ---- Готовое
+function viewDone(){
+  const done = S.projects.filter(p=>p.status==='done').sort((a,b)=>String(b.endDate||'').localeCompare(String(a.endDate||'')) || (b.updatedAt||0)-(a.updatedAt||0));
+  const sceneH = `<div class="scene">${sceneSVG(doneCounts(), S.doneCat)}</div><div class="nb" style="margin:-4px 0 12px">Тапни по вещи — покажу все такие работы. Пунктир — пока не вязала.</div>`;
+  if (!done.length) return sceneH + `<div class="empty"><h2>Здесь будут твои работы</h2><p>Добавь готовое изделие одним фото. Схему, пряжу и крючок допишешь, когда захочешь повторить.</p><button class="btn red" data-quick="done">Добавить работу</button></div>`;
+  const counts = doneCounts();
+  const cats = allCats().filter(c=>counts[c.id]);
+  let h = sceneH + `<div class="chips" id="doneChips"><button class="chip txt" data-done-cat="all" aria-pressed="${S.doneCat==='all'}">Все</button>${cats.map(c=>`<button class="chip" data-done-cat="${c.id}" aria-pressed="${S.doneCat===c.id}">${icon(c.icon, S.doneCat===c.id?'var(--bg)':c.color, S.doneCat===c.id?'var(--ink)':'var(--surface)')}${esc(c.name)} · ${counts[c.id]}</button>`).join('')}</div>`;
+  const list = S.doneCat==='all' ? done : done.filter(p=>catOf(p)===S.doneCat);
+  h += `<div class="tiles">${list.map(doneTile).join('')}</div>`;
+  return h;
+}
+function doneTile(p){
+  const t = catTile(catOf(p)); const c = cover(p);
+  return `<button class="tl" style="background:${t.bg}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:t.svg}<em>${esc(p.title||catInfo(catOf(p)).name)}${num(p.copies)>1?` ×${num(p.copies)}`:''}</em></button>`;
+}
+
+// ---- list interactions
+async function quickTimer(id){
+  const p = projById(id); if (!p) return;
+  const stages = clone(p.stages||[]);
+  try{
+    if (p.timer){
+      const add = Math.max(1, Math.round((Date.now()-p.timer.startedAt)/60000));
+      const st = stages.find(s=>s.id===p.timer.stageId); if (st) st.minutes = num(st.minutes) + add;
+      await db.collection('projects').doc(id).update({stages, timer:null, updatedAt:Date.now()});
+      toast(`+ ${fmtMin(add)} к «${STAGES[st?.kind]||'вязанию'}»`);
+    } else {
+      let st = stages.find(s=>s.kind==='knit') || stages[0];
+      if (!st){ st = {id:uid(), kind:'knit', hook:'', minutes:0}; stages.push(st); }
+      await db.collection('projects').doc(id).update({stages, timer:{stageId:st.id, startedAt:Date.now()}, updatedAt:Date.now()});
+      toast('Таймер пошёл');
+    }
+  }catch(e){ toast('Не получилось сохранить'); }
+}
+document.addEventListener('click', async e => {
+  if (e.target.closest('#sheet') || e.target.closest('#lb')) return;
+  const q = e.target.closest('[data-qt]'); if (q){ quickTimer(q.dataset.qt); return; }
+  const vy = e.target.closest('[data-view-yarn]'); if (vy){ openView('yarn', vy.dataset.viewYarn); return; }
+  const vp = e.target.closest('[data-view-project]'); if (vp){ openView('project', vp.dataset.viewProject); return; }
+  const dc = e.target.closest('[data-done-cat]'); if (dc){ S.doneCat = dc.dataset.doneCat; render(); return; }
+  const sc = e.target.closest('[data-scene]'); if (sc){ const k = sc.dataset.scene; const n = doneCounts()[k]||0; if (!n){ toast(`${catInfo(k).name} — пока не вязала`); return; } S.doneCat = (S.doneCat===k) ? 'all' : k; render(); if (S.doneCat!=='all') document.getElementById('doneChips')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+  if (e.target.closest('[data-shop-toggle]')){ S.shopOpen = !S.shopOpen; render(); return; }
+  if (e.target.closest('[data-quick-yarn]')){ $('#quickYarn').click(); return; }
+  const qk = e.target.closest('[data-quick]'); if (qk){ openQuick(qk.dataset.quick); return; }
+  const bt = e.target.closest('[data-bought]'); if (bt){ const y=yarnById(bt.dataset.bought); if(!y) return; try{ await db.collection('yarns').doc(y.id).update({qty: num(y.qty)+num(bt.dataset.n), updatedAt:Date.now()}); toast(`+${fmtN(num(bt.dataset.n))} мот. в шкаф`);}catch(err){toast('Не получилось сохранить');} return; }
+  const sd = e.target.closest('[data-shop-del]'); if (sd){ try{ await db.collection('shop').doc(sd.dataset.shopDel).delete(); }catch(err){} return; }
+});
+document.addEventListener('change', async e => {
+  const sd = e.target.closest('[data-shop-done]'); if (sd && !e.target.closest('#sheet')){ try{ await db.collection('shop').doc(sd.dataset.shopDone).update({done: sd.checked}); }catch(err){} }
+});
+document.addEventListener('submit', async e => {
+  if (e.target.id==='shopForm'){ e.preventDefault(); const t=$('#shopText').value.trim(); if(!t) return; try{ await db.collection('shop').add({text:t, link:$('#shopLink').value.trim(), qty:$('#shopQty').value.trim(), forId:$('#shopFor').value, done:false, createdAt:Date.now()}); }catch(err){toast('Не получилось добавить');} }
+});
+$('#fab').addEventListener('click', () => { if (S.tab==='shelf') $('#quickYarn').click(); else openQuick({plans:'plan', now:'wip', done:'done'}[S.tab]); });
+$('#menuBtn').addEventListener('click', () => openView('menu', null));
+
+// quick add yarn from photos (one photo = one yarn)
+async function addYarnsFromFiles(files, opts={}){
+  files = [...files]; if (!files.length) return [];
+  toast(files.length > 1 ? `Добавляю ${files.length} мотка…` : 'Добавляю моток…');
+  const ids = [];
+  for (const f of files){
+    try{ const {id, blob} = await uploadPhoto(f); const col = await extractColors(blob);
+      const ref = await db.collection('yarns').add({name:'', photo:id, colors:col.colors, color:col.colors[0], multi:col.multi, qty: opts.qty ?? 1, createdAt:Date.now(), updatedAt:Date.now()});
+      ids.push(ref.id);
+    }catch(err){ toast('Фото не загрузилось'); }
+  }
+  return ids;
+}
+$('#quickYarn').addEventListener('change', async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  const ids = await addYarnsFromFiles(files);
+  if (ids.length === 1) openView('yarn', ids[0]); else if (ids.length) toast(`На полке ${ids.length} ${plural(ids.length,'новый моток','новых мотка','новых мотков')}`);
+});
+
+// ================= sheet stack =================
+const BACK_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 5l-7 7 7 7"/></svg>';
+function head(title, right=''){ return `<div class="sh-head"><div class="in"><button class="sq-btn" data-back aria-label="Назад">${BACK_SVG}</button><h2 id="shTitle">${esc(title)}</h2>${right}</div></div>`; }
+function openView(kind, id){ STACK.push({t:'view', kind, id}); drawTop(true); }
+function back(){
+  const fr = STACK.pop();
+  if (fr?.t==='edit') fr.ed.saver.flush();
+  if (fr?.t==='quick' && !fr.saved) gcBlobs(fr.q.files.map(f=>f.id));
+  ED = null;
+  if (!STACK.length){ $('#sheet').innerHTML=''; document.body.style.overflow=''; render(); return; }
+  drawTop(true); render();
+}
+function drawTop(reset){
+  const fr = STACK.at(-1); if (!fr) return;
+  document.body.style.overflow='hidden';
+  const sh = $('#sheet .sheet'); const g = $('#sheet .gal');
+  const keep = !reset && sh ? {top: sh.scrollTop, gx: g ? g.scrollLeft : 0} : null;
+  let html;
+  if (fr.t==='view'){ ED = null; html = fr.kind==='yarn' ? yarnView(fr.id) : fr.kind==='project' ? projectView(fr.id) : menuView(); }
+  else if (fr.t==='quick'){ ED = null; html = quickView(fr.q); }
+  else { ED = fr.ed; html = fr.ed.kind==='project' ? projectForm() : yarnForm(); }
+  $('#sheet').innerHTML = `<div class="sheet">${html}</div>`;
+  if (keep){ const n=$('#sheet .sheet'); n.scrollTop = keep.top; const gg=$('#sheet .gal'); if (gg) gg.scrollLeft = keep.gx; }
+  tickAll(); bindGal();
+}
+function redrawIfView(){ const fr = STACK.at(-1); if (fr && fr.t==='view') drawTop(false); }
+function bindGal(){
+  const g = $('#sheet .gal'); if (!g) return; const dots = [...document.querySelectorAll('#sheet .dots b')]; if (!dots.length) return;
+  const upd = () => { const i = Math.round(g.scrollLeft / Math.max(1,g.clientWidth)); dots.forEach((d,k)=>d.classList.toggle('on', k===i)); };
+  g.addEventListener('scroll', upd, {passive:true}); upd();
+}
+
+// ================= yarn view =================
+function yarnView(id){
+  const y = yarnById(id);
+  if (!y) return head('Пряжа') + `<div class="sh-body"><div class="empty"><p>Этой пряжи больше нет.</p></div></div>`;
+  const b = yarnBalance(y); const g = yarnGroup(y); const cols = yarnColors(y);
+  const heroBlock = y.photo ? `<button class="hero-photo" data-lb="${y.photo}" aria-label="Открыть фото"><img src="${img(y.photo)}" alt=""><span class="ball-badge">${yarnBall(y)}</span></button>` : `<div class="hero-ball">${yarnBall(y)}</div>`;
+  const facts = [];
+  if (y.brand) facts.push(esc(y.brand));
+  if (y.composition) facts.push(esc(y.composition));
+  if (y.weight || y.length) facts.push(`${y.weight?num(y.weight)+' г':''}${y.weight&&y.length?' / ':''}${y.length?num(y.length)+' м':''}`);
+  if (y.hookRec) facts.push('крючок ' + esc(y.hookRec));
+  if (num(y.price)) facts.push(money(num(y.price)) + ' / моток');
+  if (y.colorName) facts.push('цвет ' + esc(y.colorName));
+  if (y.lot) facts.push('партия ' + esc(y.lot));
+  const sib = y.name ? S.yarns.filter(z => z.id!==y.id && (z.name||'').trim().toLowerCase()===(y.name||'').trim().toLowerCase() && (z.brand||'')===(y.brand||'')) : [];
+  const used = b.where.map(w=>w.p);
+  return head(y.name || 'Пряжа', `<button class="btn line sm" data-edit-yarn="${y.id}">Изменить</button>`) + `<div class="sh-body flush">
+    ${heroBlock}
+    <div class="ttl" style="margin-top:6px"><h3>${esc(y.name || 'Без названия')}</h3><span class="pill" style="background:${GROUP_COL[g]};color:${LIGHT(GROUP_COL[g])?'#111':'#fff'}">${GROUPS[g]}</span></div>
+    ${!y.name ? `<div class="hint">Можно дописать название, состав и цену — кнопка «Изменить». А можно и так оставить.</div>` : ''}
+    <div class="cdots">${cols.map(c=>`<i style="background:${c}"></i>`).join('')}<span class="hint">${cols.length>1?'разноцветная':'однотонная'}</span></div>
+    <div class="kpy">
+      <div class="k"><small>В шкафу</small><div class="stepper"><button data-qty="-1" aria-label="Минус моток">−</button><b>${fmtN(Math.max(0,b.shelf))}</b><button data-qty="1" aria-label="Плюс моток">+</button></div></div>
+      <div class="k"><small>Отложено</small><b>${fmtN(b.reserved)}</b></div>
+      <div class="k" style="${b.free<0?'border-color:var(--warn)':''}"><small>${b.free<0?'Не хватает':'Свободно'}</small><b style="${b.free<0?'color:var(--warn)':''}">${fmtN(Math.abs(b.free))}</b></div>
+    </div>
+    <div class="row-top"><input type="number" inputmode="decimal" id="buyN" placeholder="Сколько мотков докупила"><button class="btn sm" data-buy="${y.id}">+ докупила</button></div>
+    ${facts.length || y.link ? `<div class="facts">${facts.map(f=>`<span>${f}</span>`).join('')}${y.link?`<a href="${esc(y.link)}" target="_blank" rel="noopener">товар ↗</a>`:''}</div>` : ''}
+    ${used.length ? `<div class="h3" style="margin:6px 0 0">Из неё</div><div class="ptiles">${used.map(p=>{ const t=catTile(catOf(p)); const c=cover(p); return `<button class="tl" style="background:${t.bg}" data-view-project="${p.id}">${c?`<img src="${img(c)}" alt="" loading="lazy">`:t.svg}<em>${esc(STATUS[p.status])}</em></button>`; }).join('')}</div>` : ''}
+    ${sib.length ? `<div class="h3" style="margin:6px 0 0">Другие цвета этой пряжи</div><div class="yrow">${sib.map(z=>`<button data-view-yarn="${z.id}">${yarnBall(z)}<em>×${fmtN(Math.max(0,yarnBalance(z).shelf))}</em></button>`).join('')}</div>` : ''}
+    ${y.notes ? `<div class="blk"><div class="blk-h"><b>Заметки</b></div><div style="white-space:pre-wrap">${esc(y.notes)}</div></div>` : ''}
+  </div>`;
+}
+
+// ================= project view (recipe) =================
+function projectView(id){
+  const p = projById(id);
+  if (!p) return head('Изделие') + `<div class="sh-body"><div class="empty"><p>Этого изделия больше нет.</p></div></div>`;
+  const ci = catInfo(catOf(p)); const fg = LIGHT(ci.color)?'#111':'#fff';
+  const slides = [...(p.photos||[]).map(x=>({id:x,l:''})), ...(p.patternImgs||[]).map(x=>({id:x,l:'схема'})), ...(p.refImgs||[]).map(x=>({id:x,l:'референс'}))];
+  const gal = slides.length
+    ? `<div class="gal-wrap"><div class="gal">${slides.map(s=>`<button class="sl" data-lb="${s.id}" aria-label="Открыть фото"><img src="${img(s.id)}" alt="" loading="lazy">${s.l?`<span class="gal-lab">${s.l}</span>`:''}</button>`).join('')}</div>${slides.length>1?`<div class="dots">${slides.map(()=>'<b></b>').join('')}</div>`:''}</div>`
+    : `<div class="gal" style="background:${ci.color}"><div class="sl">${icon(ci.icon,fg,ci.color)}</div></div>`;
+  const ys = (p.yarns||[]).filter(a=>yarnById(a.yarnId));
+  const hooks = hooksOf(p); const tm = totalMin(p); const cost = projCost(p); const sk = projSkeins(p);
+  const gifts = (p.gifts||[]).map(g=>personById(g.personId)?.name).filter(Boolean);
+  let actions = '';
+  if (p.status==='plan') actions = `<button class="btn red wide" data-status="wip">Начинаю вязать</button>`;
+  if (p.status==='wip') actions = `<div class="grid2f"><button class="btn red" data-status="done">Готово!</button><button class="btn line" data-status="frozen">На паузу</button></div>`;
+  if (p.status==='frozen') actions = `<button class="btn red wide" data-status="wip">Продолжить</button>`;
+  const timer = (p.status==='wip' || p.timer) ? `<button class="big-timer ${p.timer?'on':''}" data-qt="${p.id}"><span>${p.timer?'Идёт время':'Засечь время'}</span>${p.timer?`<span class="tick" data-tick="${p.timer.startedAt}"></span>`:'<span>▶</span>'}</button>` : '';
+  // progress
+  let prog = '';
+  if (p.type==='granny'){
+    if (num(p.grannyCount)>0){
+      const N = Math.min(400, num(p.grannyCount)), D = num(p.grannyDone); const yc = ys.flatMap(a=>yarnColors(yarnById(a.yarnId))); const pal = yc.length ? yc : ['#FF5A36','#1F4FD8','#FFC93C'];
+      prog = `<div class="blk"><div class="blk-h"><b>Квадраты</b><span class="hint">${D} из ${N} · ещё ${Math.max(0,N-D)}</span></div><div class="sqs">${Array.from({length:N},(_,i)=>`<button data-sq="${i}" aria-label="Квадрат ${i+1}" style="${i<D?`background:${pal[i%pal.length]}`:''}"></button>`).join('')}</div><div class="hint">Тапни по квадратику — отметишь, сколько связано.</div></div>`;
+    } else prog = `<div class="blk"><div class="blk-h"><b>Квадраты</b></div><div class="row-top"><input type="number" inputmode="numeric" id="gcN" placeholder="Сколько квадратов всего"><button class="btn sm" data-set-gc>OK</button></div></div>`;
+  }
+  if (p.type==='parts'){
+    const parts = p.parts||[];
+    prog = `<div class="blk"><div class="blk-h"><b>Детали</b><span class="hint">${parts.filter(x=>x.done).length} из ${parts.length}</span></div>${parts.length?`<div class="parts">${parts.map((x,i)=>`<button class="${x.done?'on':''}" data-part="${i}">${x.done?'✓ ':''}${esc(x.name||'Деталь')}${num(x.minutes)?` <span style="opacity:.6;font-weight:500">${fmtH(x.minutes)}</span>`:''}</button>`).join('')}</div>`:`<div class="hint">Детали добавляются в «Изменить».</div>`}</div>`;
+  }
+  if (p.type==='motif'){
+    const r = motifRate(p);
+    prog = `<div class="blk"><div class="blk-h"><b>Связано штук</b>${num(p.motifTarget)?`<span class="hint">цель ${num(p.motifTarget)}</span>`:''}</div><div class="counter"><button data-motif="-1" aria-label="Минус">−</button><b>${num(p.motifCount)}</b><button class="plus" data-motif="1" aria-label="Плюс">+</button></div>${r?`<div class="hint">из одного мотка ≈ <b>${fmtN(r)} шт.</b></div>`:''}</div>`;
+  }
+  const facts = [];
+  if (tm) facts.push(`⏱ ${fmtH(tm)}`);
+  if (sk) facts.push(`${fmtN(sk)} ${plural(sk,'моток','мотка','мотков')}`);
+  if (cost) facts.push(money(cost));
+  if (num(p.copies)>1) facts.push(`связано ${num(p.copies)} шт.`);
+  if (p.startDate || p.endDate) facts.push([fmtDate(p.startDate), fmtDate(p.endDate)].filter(Boolean).join(' → '));
+  if (p.size) facts.push(esc(p.size));
+  if (p.blocking?.done) facts.push('ВТО' + (p.blocking.method?': '+esc(p.blocking.method):''));
+  if (gifts.length) facts.push('подарено: ' + esc(gifts.join(', ')));
+  const sch = (p.patternImgs||[])[0];
+  return head(p.title || ci.name, `<button class="btn line sm" data-edit-project="${p.id}">Изменить</button>`) + `<div class="sh-body flush">
+    ${gal}
+    <div class="ttl" style="margin-top:6px"><h3>${esc(p.title || ci.name)}</h3><span class="pill p-${p.status}">${STATUS[p.status]}</span></div>
+    <div class="facts"><span style="display:flex;gap:6px;align-items:center">${icon(ci.icon, ci.color, 'var(--surface)')}${esc(ci.name)}</span></div>
+    ${timer}${actions}${prog}
+    <div class="kp">
+      <button class="k hook" data-edit-project="${p.id}"><small>Крючок</small><b>${hooks.length?esc(hooks[0]):'—'}${hooks.length?' мм':''}</b>${hooks.length>1?`<span>ещё ${esc(hooks.slice(1).join(', '))} мм</span>`:hooks.length?'':'<span>не указан</span>'}</button>
+      <div class="k sch"><small>Схема</small>${sch?`<button class="im" data-lb="${sch}" style="border:0;padding:0"><img src="${img(sch)}" alt=""></button>`:`<div class="im">${icon(ci.icon,'var(--mut)','var(--soft)').replace('<svg','<svg style="width:44px;height:44px"')}</div>`}${p.patternLink?`<a href="${esc(p.patternLink)}" target="_blank" rel="noopener">открыть ↗</a>`:(sch?'':`<button class="lnk" style="border:0;background:none;padding:0;text-align:left" data-edit-project="${p.id}">добавить схему</button>`)}</div>
+      <div class="k wide"><small>Пряжа</small>${ys.length?`<div class="yrow" style="margin-top:6px">${ys.map(a=>{ const y=yarnById(a.yarnId); return `<button data-view-yarn="${y.id}" aria-label="${esc(y.name||'Пряжа')}">${yarnBall(y)}${num(a.skeins)?`<em>×${fmtN(num(a.skeins))}</em>`:''}</button>`; }).join('')}</div><div class="hint">${esc(ys.map(a=>yarnById(a.yarnId).name).filter(Boolean).join(', '))}</div>`:`<div class="hint">пряжа не указана — добавь в «Изменить»</div>`}</div>
+    </div>
+    ${facts.length?`<div class="facts">${facts.map(f=>`<span>${f}</span>`).join('')}</div>`:''}
+    ${p.patternInfo?`<div class="blk"><div class="blk-h"><b>По схеме</b></div><div style="white-space:pre-wrap">${esc(p.patternInfo)}</div></div>`:''}
+    ${p.patternNotes?`<div class="blk"><div class="blk-h"><b>Что поменяла</b></div><div style="white-space:pre-wrap">${esc(p.patternNotes)}</div></div>`:''}
+    ${p.notes?`<div class="blk"><div class="blk-h"><b>Заметки</b></div><div style="white-space:pre-wrap">${esc(p.notes)}</div></div>`:''}
+    ${p.status==='done'?`<button class="btn wide" data-again="${p.id}">Связать ещё раз</button>`:''}
+  </div>`;
+}
+
+// ================= menu =================
+const MENU = {icon:'heart', color:'#FF5A36'};
+function menuView(){
+  const lb = lastBackup(); const days = lb ? Math.floor((Date.now()-lb)/864e5) : null; const stale = (!lb || days>=14) && (S.projects.length || S.yarns.length);
+  const custom = (MEM.meta.get('cats')?.list)||[];
+  const gifts = {}; S.projects.forEach(p=>(p.gifts||[]).forEach(g=>{ if(!g.personId) return; (gifts[g.personId] ||= []).push({p, qty:Math.max(1,num(g.qty)||1)}); }));
+  return head('Меню') + `<div class="sh-body">
+   <section class="sec"><h4>Резервная копия</h4><div class="hint ${stale?'bad':''}">${lb ? `Последняя копия: ${days===0?'сегодня':days+' дн. назад'}.` : 'Копию ещё не делала.'} Всё хранится только на этом телефоне — сохраняй копию раз в пару недель в облако или мессенджер.</div>
+     <div class="grid2f"><button class="btn" data-backup>Сохранить копию</button><label class="btn line">Восстановить<input type="file" accept="application/json,.json" data-restore hidden></label></div><div id="restoreSlot"></div></section>
+   <section class="sec"><h4>Идеи по доработке</h4><div class="hint">Записывай, что хочется поменять, — потом принесёшь списком.</div>
+     ${S.ideas.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).map(i=>`<div class="idea"><p>${esc(i.text)}</p><button class="x" data-idea-del="${i.id}" aria-label="Удалить">×</button></div>`).join('')}
+     <textarea id="ideaText" placeholder="Например: хочу видеть, сколько снежинок связала за зиму"></textarea><button class="btn" data-idea-add>Записать идею</button></section>
+   <section class="sec"><h4>Свои категории</h4>
+     ${custom.length?`<div class="chips" style="flex-wrap:wrap">${custom.map(c=>`<span class="chip">${icon(c.icon,c.color,'var(--surface)')}${esc(c.name)}<button class="x" style="width:24px;height:24px;font-size:18px" data-cat-del="${c.id}" aria-label="Удалить">×</button></span>`).join('')}</div>`:''}
+     <input type="text" id="catName" placeholder="Название, например «Подставки»">
+     <div class="catgrid" style="grid-template-columns:repeat(6,1fr)">${ICON_LIB.map(k=>`<button data-pick-icon="${k}" aria-pressed="${MENU.icon===k}" style="background:${MENU.color}">${icon(k, LIGHT(MENU.color)?'#111':'#fff', MENU.color)}</button>`).join('')}</div>
+     <div class="seg">${PALETTE.map(c=>`<button data-pick-color="${c}" aria-pressed="${MENU.color===c}" style="background:${c};width:38px;height:34px" aria-label="Цвет"></button>`).join('')}</div>
+     <button class="btn" data-cat-add>Добавить категорию</button></section>
+   <section class="sec"><h4>Кому дарю</h4>
+     ${S.people.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ru')).map(pr=>{ const g=gifts[pr.id]||[]; const n=g.reduce((s,x)=>s+x.qty,0); return `<div class="row"><div class="row-top"><b>${esc(pr.name)}</b><span class="hint">${n?n+' шт.':'пока ничего'}</span><button class="x" data-person-del="${pr.id}" aria-label="Удалить">×</button></div>${g.length?`<div class="hint">${g.map(x=>esc(x.p.title||catInfo(catOf(x.p)).name)+(x.qty>1?' ×'+x.qty:'')).join(', ')}</div>`:''}<div data-confirm-slot="${pr.id}"></div></div>`; }).join('')}
+     <div class="row-top"><input type="text" id="personName" placeholder="Имя, например «Мама»"><button class="btn sm" data-person-add>Добавить</button></div></section>
+   <div class="nb">Мой клубок · данные хранятся на этом устройстве</div>
+  </div>`;
+}
+
+// ================= editors =================
+function makeSaver(coll){
+  const sv = {timer:null, busy:false, again:false, pending:false, ed:null};
+  sv.schedule = () => { sv.pending=true; setSave('Сохраняю…'); clearTimeout(sv.timer); sv.timer=setTimeout(sv.flush, 600); };
+  sv.flush = async () => {
+    clearTimeout(sv.timer); const E = sv.ed; if (!sv.pending || !E) return;
+    if (sv.busy){ sv.again=true; return; }
+    sv.busy=true; sv.pending=false;
+    const data = clone(E.form); delete data.id; data.updatedAt = Date.now(); if (!data.createdAt) data.createdAt = Date.now(); E.form.createdAt = data.createdAt;
+    try{ await db.collection(coll).doc(E.id).set(data); E.created=true; if (ED===E) setSave('Сохранено'); }
+    catch(err){ sv.pending=true; setSave('Не сохранилось, повторю'); setTimeout(()=>sv.flush(), 2500); }
+    sv.busy=false; if (sv.again){ sv.again=false; sv.pending=true; sv.flush(); }
+  };
+  return sv;
+}
+function setSave(t){ const el=$('#saveSt'); if (el) el.textContent=t; }
+function setPath(obj, path, val){ const ks=path.split('.'); let o=obj; for (let i=0;i<ks.length-1;i++){ const k=ks[i]; if (o[k]==null) o[k] = /^\d+$/.test(ks[i+1])?[]:{}; o=o[k]; } o[ks.at(-1)] = val; }
+function openEdit(kind, id){
+  const src = kind==='yarn' ? yarnById(id) : projById(id); if (!src) return;
+  const form = clone(src); delete form.id;
+  if (kind==='project'){ form.stages ||= []; if (!form.stages.length) form.stages.push({id:uid(),kind:'knit',hook:'',minutes:0}); form.yarns ||= []; form.gifts ||= []; form.parts ||= []; form.blocking ||= {done:false,method:''}; if (!form.category) form.category = catOf(src); }
+  if (kind==='yarn'){ if (!Array.isArray(form.colors) || !form.colors.length) form.colors = [form.color || '#C9B8D6']; if (form.multi==null) form.multi = form.colors.length>1; }
+  const ed = {kind, id, form, created:true, saver:makeSaver(kind==='yarn'?'yarns':'projects')}; ed.saver.ed = ed;
+  STACK.push({t:'edit', ed}); drawTop(true);
+}
+function rerenderEditor(){ drawTop(false); }
+function seg(path, opts, cur){ return `<div class="seg">${Object.entries(opts).map(([k,l])=>`<button type="button" data-set="${path}" data-val="${k}" aria-pressed="${String(cur)===k}">${l}</button>`).join('')}</div>`; }
+function imgSection(key, title, hint){
+  const arr = ED.form[key]||[];
+  return `<section class="sec"><div class="sec-h"><h4>${title}</h4><span class="hint">${arr.length||''}</span></div>${hint?`<div class="hint">${hint}</div>`:''}
+    <div class="imgs">${arr.map(id=>`<button class="im" data-lb="${id}" data-arr="${key}" aria-label="Открыть"><img src="${img(id)}" alt="" loading="lazy"></button>`).join('')}
+    <label class="add-img"><input type="file" accept="image/*" multiple data-img="${key}" hidden><span><b>+</b>галерея, скрины, камера</span></label></div></section>`;
+}
+function yarnOptions(sel){ return `<option value="">— выбери из шкафа —</option>` + S.yarns.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ru')).map((y,i)=>`<option value="${y.id}" ${y.id===sel?'selected':''}>${esc(y.name||('Моток без названия #'+(i+1)))}${y.brand?' · '+esc(y.brand):''}${' · '+GROUPS[yarnGroup(y)].toLowerCase()}</option>`).join(''); }
+function yarnHint(i){
+  const a = ED.form.yarns[i]; const y = yarnById(a?.yarnId); if (!y) return '';
+  const u = yarnUse(y.id, ED.id); const free = num(y.qty) - u.used - u.reserved; const mine = ED.form.yarns.filter(x=>x.yarnId===y.id).reduce((s,x)=>s+num(x.skeins),0);
+  const left = free - mine; const cost = num(a.skeins)*num(y.price);
+  return `<span class="hint ${left<0 && ED.form.status!=='done'?'bad':''}">в шкафу ${fmtN(num(y.qty)-u.used)} · ${left<0?(ED.form.status==='done'?`на складе не хватает ${fmtN(-left)}`:`не хватает ${fmtN(-left)} → в покупки`):`останется ${fmtN(left)}`}${cost?` · ${money(cost)}`:''}</span>`;
+}
+function updateHints(){ document.querySelectorAll('[data-yhint]').forEach(el=>el.innerHTML=yarnHint(+el.dataset.yhint)); }
+
+function projectForm(){
+  const F = ED.form; const ci = catInfo(F.category||'other');
+  const parts = F.parts||[];
+  return head(F.title || ci.name, `<span class="save-st" id="saveSt">Сохранено</span>`) + `<div class="sh-body">
+    <section class="sec">
+      <div class="field"><span>Что это</span><div class="catgrid">${allCats().map(c=>{ const fg=LIGHT(c.color)?'#111':'#fff'; return `<button type="button" data-set="category" data-val="${c.id}" aria-pressed="${F.category===c.id}" style="background:${c.color};color:${fg}">${icon(c.icon,fg,c.color)}<span>${esc(c.name)}</span></button>`; }).join('')}</div></div>
+      <label class="field"><span>Название (можно не писать)</span><input type="text" id="f-title" data-f="title" value="${esc(F.title)}" placeholder="${esc(ci.name)}"></label>
+      <div class="field"><span>Статус</span>${seg('status', STATUS, F.status)}</div>
+      <div class="field"><span>Как считать прогресс</span>${seg('type', PROG, F.type||'regular')}</div>
+      ${F.type==='granny'?`<div class="grid2f"><label class="field"><span>Квадратов всего</span><input type="number" inputmode="numeric" id="f-gc" data-f="grannyCount" value="${esc(F.grannyCount)}"></label><label class="field"><span>Уже связано</span><input type="number" inputmode="numeric" id="f-gd" data-f="grannyDone" value="${esc(F.grannyDone)}"></label></div><label class="check"><input type="checkbox" id="f-gp" data-f="grannyPinned" ${F.grannyPinned?'checked':''}> Ставила квадраты на закрепку</label>`:''}
+      ${F.type==='motif'?`<div class="grid2f"><label class="field"><span>Связано штук</span><input type="number" inputmode="numeric" id="f-mc" data-f="motifCount" value="${esc(F.motifCount)}"></label><label class="field"><span>Хочу связать</span><input type="number" inputmode="numeric" id="f-mt" data-f="motifTarget" value="${esc(F.motifTarget)}"></label></div>`:''}
+      ${F.type==='parts'?`<div class="field"><span>Детали</span>${parts.map((x,i)=>`<div class="row" data-part-row="${i}"><div class="row-top"><input type="text" id="f-pn${i}" data-f="parts.${i}.name" value="${esc(x.name)}" placeholder="Рукав"><label class="check" style="flex:none"><input type="checkbox" id="f-pd${i}" data-f="parts.${i}.done" ${x.done?'checked':''}> готово</label><button class="x" data-del="parts:${i}" aria-label="Убрать">×</button></div><div class="hm"><span class="hint">время (необязательно)</span><input type="number" inputmode="numeric" min="0" data-ptime="${i}" data-part="h" value="${Math.floor(num(x.minutes)/60)||''}" placeholder="0" aria-label="часы"> ч <input type="number" inputmode="numeric" min="0" data-ptime="${i}" data-part="m" value="${Math.round(num(x.minutes))%60||''}" placeholder="0" aria-label="минуты"> м</div></div>`).join('')}<div class="row-top" style="flex-wrap:wrap"><button class="btn line sm" data-add="parts" style="flex:none">+ деталь</button>${Object.entries(PARTS_PRESET).map(([k,arr])=>`<button class="btn line sm" data-preset="${k}" style="flex:none">${esc(catInfo(k).name)}</button>`).join('')}</div></div>`:''}
+    </section>
+    <section class="sec"><div class="sec-h"><h4>Пряжа</h4></div>
+      ${(F.yarns||[]).map((a,i)=>{ const y=yarnById(a.yarnId); return `<div class="row"><div class="row-top">${y?`<span style="width:40px;height:40px;flex:none">${yarnBall(y).replace('<svg','<svg style="width:40px;height:40px;overflow:visible"')}</span>`:''}<select id="f-y${i}" data-f="yarns.${i}.yarnId" data-rr>${yarnOptions(a.yarnId)}</select><button class="x" data-del="yarns:${i}" aria-label="Убрать">×</button></div>
+        <div class="row-top"><label class="field"><span>Мотков ${F.status==='done'?'ушло':F.status==='plan'?'нужно':'беру'}</span><input type="number" id="f-ys${i}" inputmode="decimal" step="0.5" min="0" data-f="yarns.${i}.skeins" data-hints value="${esc(a.skeins)}" placeholder="2"></label></div><div data-yhint="${i}">${yarnHint(i)}</div></div>`; }).join('')}
+      <div class="grid2f"><button class="btn line sm" data-add="yarns">+ из шкафа</button><label class="btn line sm">+ новая по фото<input type="file" accept="image/*" multiple data-newyarn hidden></label></div>
+    </section>
+    <section class="sec"><div class="sec-h"><h4>Крючок и время</h4><span class="hint">всего <span id="totTime">${fmtMin(totalMin(F))}</span></span></div>
+      ${F.timer?`<button class="big-timer on" data-timer-stop><span>Идёт: ${STAGES[(F.stages||[]).find(s=>s.id===F.timer.stageId)?.kind]||'этап'}</span><span class="tick" data-tick="${F.timer.startedAt}"></span></button>`:''}
+      ${(F.stages||[]).map((s,i)=>`<div class="row" data-stage-row><div class="row-top"><select id="f-sk${i}" data-f="stages.${i}.kind">${Object.entries(STAGES).map(([k,l])=>`<option value="${k}" ${s.kind===k?'selected':''}>${l}</option>`).join('')}</select>${F.timer?'':`<button class="btn line sm" data-timer-start="${s.id}" style="flex:none">▶</button>`}<button class="x" data-del="stages:${i}" aria-label="Убрать">×</button></div>
+        <div class="grid2f"><label class="field"><span>Крючок, мм</span><input type="text" id="f-sh${i}" inputmode="decimal" list="hooks" data-f="stages.${i}.hook" value="${esc(s.hook)}" placeholder="4"></label>
+        <div class="field"><span>Время</span><div class="hm"><input type="number" inputmode="numeric" min="0" data-time="${i}" data-part="h" value="${Math.floor(num(s.minutes)/60)||''}" placeholder="0" aria-label="часы"> ч <input type="number" inputmode="numeric" min="0" data-time="${i}" data-part="m" value="${Math.round(num(s.minutes))%60||''}" placeholder="0" aria-label="минуты"> м</div></div></div></div>`).join('')}
+      <button class="btn line sm" data-add="stages" style="justify-self:start">+ этап (обвязка, связывание…)</button>
+    </section>
+    ${imgSection('photos','Фото изделия','Первое фото — обложка.')}
+    ${imgSection('patternImgs','Схема','Скриншоты из Pinterest, фото из книги.')}
+    <section class="sec"><label class="field"><span>Ссылка на схему</span><input type="url" id="f-pl" data-f="patternLink" value="${esc(F.patternLink)}" placeholder="https://pinterest…"></label>
+      <label class="field"><span>Что нужно по схеме</span><textarea id="f-pi" data-f="patternInfo" placeholder="Пряжа и расход, обозначения">${esc(F.patternInfo)}</textarea></label></section>
+    ${imgSection('refImgs','Референсы','Картинки-вдохновение.')}
+    <details class="more"><summary>Подробнее</summary><div class="in">
+      <div class="grid2f"><label class="field"><span>Начала</span><input type="date" id="f-sd" data-f="startDate" value="${esc(F.startDate)}"></label><label class="field"><span>Закончила</span><input type="date" id="f-ed" data-f="endDate" value="${esc(F.endDate)}"></label></div>
+      <label class="field"><span>Сколько одинаковых связала</span><input type="number" inputmode="numeric" min="1" id="f-cp" data-f="copies" value="${esc(F.copies??1)}"></label>
+      <label class="check"><input type="checkbox" id="f-bd" data-f="blocking.done" data-rr ${F.blocking?.done?'checked':''}> Делала ВТО</label>
+      ${F.blocking?.done?seg('blocking.method', Object.fromEntries(BLOCK.map(b=>[b,b])), F.blocking?.method):''}
+      <div class="grid2f"><label class="field"><span>Размер</span><input type="text" id="f-sz" data-f="size" value="${esc(F.size)}" placeholder="180×20 см"></label><label class="field"><span>Плотность</span><input type="text" id="f-gg" data-f="gauge" value="${esc(F.gauge)}"></label></div>
+      <label class="field"><span>Фурнитура и ткани</span><textarea id="f-hw" data-f="hardware" placeholder="Пуговицы 15 мм — 5 шт">${esc(F.hardware)}</textarea></label>
+      <label class="field"><span>Стоимость фурнитуры, BYN</span><input type="number" inputmode="decimal" id="f-hwc" data-f="hardwareCost" value="${esc(F.hardwareCost)}"></label>
+      <div class="field"><span>Кому подарено</span>${(F.gifts||[]).map((g,i)=>`<div class="row-top"><select id="f-gp${i}" data-f="gifts.${i}.personId"><option value="">— кому —</option>${S.people.map(p=>`<option value="${p.id}" ${p.id===g.personId?'selected':''}>${esc(p.name)}</option>`).join('')}</select><input type="number" inputmode="numeric" min="1" style="width:70px" id="f-gq${i}" data-f="gifts.${i}.qty" value="${esc(g.qty)}" aria-label="Сколько штук"><button class="x" data-del="gifts:${i}" aria-label="Убрать">×</button></div>`).join('')}
+        <div class="row-top"><input type="text" id="newPerson" placeholder="Новый человек"><button class="btn line sm" data-new-person>+</button></div>${S.people.length?`<button class="btn line sm" data-add="gifts" style="justify-self:start">+ подарок</button>`:''}</div>
+      <label class="field"><span>Что поменяла в схеме</span><textarea id="f-pn" data-f="patternNotes">${esc(F.patternNotes)}</textarea></label>
+      <label class="field"><span>Заметки</span><textarea id="f-notes" data-f="notes">${esc(F.notes)}</textarea></label>
+    </div></details>
+    <div id="delSlot"></div><button class="btn danger" data-del-ask style="justify-self:start">Удалить изделие</button>
+  </div><datalist id="hooks">${HOOKS.map(x=>`<option value="${x}">`).join('')}</datalist>`;
+}
+function yarnForm(){
+  const F = ED.form; const cols = F.colors||[];
+  return head(F.name || 'Пряжа', `<span class="save-st" id="saveSt">Сохранено</span>`) + `<div class="sh-body">
+    <section class="sec"><div class="sec-h"><h4>Фото и цвет</h4></div>
+      <div class="row-top" style="align-items:flex-start;gap:12px">
+        <div class="imgs" style="flex:none;width:110px;grid-template-columns:1fr">${F.photo?`<button class="im" data-lb="${F.photo}" aria-label="Открыть"><img src="${img(F.photo)}" alt=""></button>`:''}<label class="add-img"><input type="file" accept="image/*" data-img="photo" hidden><span><b>+</b>${F.photo?'заменить':'фото'}</span></label></div>
+        <div style="flex:1;display:grid;gap:10px;justify-items:start">
+          <span style="width:84px;height:84px">${ballSVG(F.group&&GROUPS[F.group]?F.group:autoGroup(F), F.multi?cols:[cols[0]]).replace('<svg','<svg style="width:84px;height:84px;overflow:visible"')}</span>
+          ${seg('multi', {false:'Однотонная', true:'Разноцветная'}, String(!!F.multi))}
+        </div></div>
+      <div class="cdots">${(F.multi?cols:[cols[0]]).map((c,i)=>`<button data-rmcolor="${i}" aria-label="Убрать цвет" style="border:0;padding:0;background:none"><i style="background:${c}"></i></button>`).join('')}
+        <label class="btn line sm" style="min-height:32px">${F.multi?'+ цвет':'сменить цвет'}<input type="color" data-addcolor value="${esc(cols[0]||'#C9B8D6')}" style="position:absolute;opacity:0;width:1px;height:1px"></label>
+        ${F.photo?`<button class="btn line sm" style="min-height:32px" data-recolor>по фото</button>`:''}</div>
+    </section>
+    <section class="sec">
+      <label class="field"><span>Название</span><input type="text" id="y-name" data-f="name" value="${esc(F.name)}" placeholder="Cotton Gold"></label>
+      <div class="grid2f"><label class="field"><span>Производитель</span><input type="text" id="y-brand" data-f="brand" value="${esc(F.brand)}"></label><label class="field"><span>Состав</span><input type="text" id="y-comp" data-f="composition" value="${esc(F.composition)}" placeholder="55% хлопок, 45% акрил"></label></div>
+      <div class="field"><span>Полка</span>${seg('group', {'':'Авто: '+GROUPS[autoGroup(F)], ...GROUPS}, GROUPS[F.group]?F.group:'')}</div>
+      <div class="grid2f"><label class="field"><span>Вес мотка, г</span><input type="number" inputmode="decimal" id="y-w" data-f="weight" value="${esc(F.weight)}"></label><label class="field"><span>Длина, м</span><input type="number" inputmode="decimal" id="y-l" data-f="length" value="${esc(F.length)}"></label></div>
+      <div class="grid2f"><label class="field"><span>Крючок по этикетке</span><input type="text" id="y-hook" inputmode="decimal" data-f="hookRec" value="${esc(F.hookRec)}"></label><label class="field"><span>Цвет (номер)</span><input type="text" id="y-cn" data-f="colorName" value="${esc(F.colorName)}"></label></div>
+    </section>
+    <section class="sec"><h4>Покупка</h4>
+      <div class="grid2f"><label class="field"><span>Куплено мотков всего</span><input type="number" inputmode="decimal" step="0.5" id="y-qty" data-f="qty" value="${esc(F.qty)}"></label><label class="field"><span>Цена за моток, BYN</span><input type="number" inputmode="decimal" id="y-price" data-f="price" value="${esc(F.price)}"></label></div>
+      <label class="field"><span>Ссылка на товар</span><input type="url" id="y-link" data-f="link" value="${esc(F.link)}" placeholder="https://"></label>
+      <label class="field"><span>Партия</span><input type="text" id="y-lot" data-f="lot" value="${esc(F.lot)}"></label>
+    </section>
+    <section class="sec"><h4>Заметки</h4><textarea id="y-notes" data-f="notes" placeholder="Как ведёт себя в работе, линяет ли">${esc(F.notes)}</textarea></section>
+    <div id="delSlot"></div><button class="btn danger" data-del-ask style="justify-self:start">Удалить пряжу</button>
+  </div>`;
+}
+
+// ================= quick add =================
+function openQuick(status, opts={}){ STACK.push({t:'quick', q:{status: status||'plan', category:'', files:[], title:'', kind: opts.askKind ? '' : 'project', busy:false}}); drawTop(true); if (opts.blobs) quickAddBlobs(opts.blobs); }
+function quickView(q){
+  const T = {plan:'Новая идея', wip:'Сейчас вяжу', frozen:'На паузе', done:'Готовая работа'};
+  if (!q.kind) return head('Что это?') + `<div class="sh-body"><div class="picked">${q.files.map(f=>`<img src="${img(f.id)}" alt="">`).join('')}</div>
+    <button class="btn red wide" data-qk-kind="yarn">Это пряжа — в шкаф</button><button class="btn wide" data-qk-kind="project">Это изделие или идея</button></div>`;
+  return head(T[q.status]||'Новое') + `<div class="sh-body">
+    <div class="field"><span>Статус</span>${seg('qstatus', STATUS, q.status)}</div>
+    <div class="field"><span>Что это</span><div class="catgrid">${allCats().map(c=>{ const fg=LIGHT(c.color)?'#111':'#fff'; return `<button type="button" data-qk-cat="${c.id}" aria-pressed="${q.category===c.id}" style="background:${c.color};color:${fg}">${icon(c.icon,fg,c.color)}<span>${esc(c.name)}</span></button>`; }).join('')}</div></div>
+    <div class="field"><span>${q.status==='plan'?'Референсы и схема':'Фото'}</span><div class="imgs">${q.files.map(f=>`<div class="im"><img src="${img(f.id)}" alt=""></div>`).join('')}<label class="add-img"><input type="file" accept="image/*" multiple data-qk-photo hidden><span><b>+</b>${q.busy?'загружаю…':'галерея, скрины, камера'}</span></label></div></div>
+    <label class="field"><span>Название (можно не писать)</span><input type="text" id="qkTitle" value="${esc(q.title)}" placeholder="${q.category?esc(catInfo(q.category).name):'Например: шарф для мамы'}"></label>
+    <button class="btn red wide" data-qk-save ${q.busy?'disabled':''}>Готово</button>
+  </div>`;
+}
+async function quickAddBlobs(blobs){
+  const fr = STACK.at(-1); if (!fr || fr.t!=='quick') return; fr.q.busy = true; drawTop(false);
+  for (const b of blobs){ try{ const r = await uploadPhoto(b); fr.q.files.push(r); }catch(e){} }
+  fr.q.busy = false; if (STACK.at(-1)===fr) drawTop(false);
+}
+function newProjectData({status, category, title, photos=[], refs=[]}){
+  const type = category==='snow' ? 'motif' : (PARTS_PRESET[category] && ['card','vest'].includes(category)) ? 'parts' : 'regular';
+  return {title: title||'', category, type, status, copies:1, startDate: status==='wip'?today():'', endDate: status==='done'?today():'',
+    yarns:[], stages:[{id:uid(),kind:'knit',hook:'',minutes:0}], parts: type==='parts' ? (PARTS_PRESET[category]||[]).map(n=>({id:uid(),name:n,done:false,minutes:0})) : [],
+    blocking:{done:false,method:''}, gifts:[], photos, patternImgs:[], refImgs:refs, createdAt:Date.now(), updatedAt:Date.now()};
+}
+
+// ================= sheet interactions =================
+const sheet = $('#sheet');
+sheet.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id==='qkTitle'){ const fr=STACK.at(-1); if (fr?.t==='quick') fr.q.title = el.value; return; }
+  if (!ED) return;
+  if (el.dataset.f){ const v = el.type==='checkbox' ? el.checked : el.value; setPath(ED.form, el.dataset.f, v); ED.saver.schedule();
+    if (el.dataset.f==='title' || el.dataset.f==='name'){ const t=$('#shTitle'); if (t) t.textContent = v || (ED.kind==='yarn'?'Пряжа':catInfo(ED.form.category).name); }
+    if (el.dataset.hints!=null) updateHints();
+    if (el.dataset.rr!=null || el.tagName==='SELECT' && el.dataset.f.startsWith('yarns.')) rerenderEditor();
+    if (el.dataset.f==='composition') { /* shelf label refreshes on next draw */ }
+  }
+  if (el.dataset.time!=null || el.dataset.ptime!=null){ const isP = el.dataset.ptime!=null; const i = +(isP?el.dataset.ptime:el.dataset.time); const row = el.closest(isP?'[data-part-row]':'[data-stage-row]'); const h = num(row.querySelector(`[${isP?'data-ptime':'data-time'}][data-part="h"]`).value), m = num(row.querySelector(`[${isP?'data-ptime':'data-time'}][data-part="m"]`).value); (isP?ED.form.parts:ED.form.stages)[i].minutes = Math.round(h*60+m); ED.saver.schedule(); const tot=$('#totTime'); if (tot) tot.textContent=fmtMin(totalMin(ED.form)); }
+  if (el.dataset.addcolor!=null){ /* handled on change */ }
+});
+sheet.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.dataset.img!=null) return handleFiles(el);
+  if (el.dataset.newyarn!=null){ const files=[...el.files]; el.value=''; const ed = ED; const ids = await addYarnsFromFiles(files, {qty:1}); if (!ids.length || ED!==ed) return; ids.forEach(id=>ed.form.yarns.push({yarnId:id, skeins:1})); ed.saver.schedule(); setTimeout(rerenderEditor, 50); toast('Пряжа в шкафу и в изделии'); return; }
+  if (el.dataset.addcolor!=null && ED){ const F=ED.form; if (F.multi) F.colors=[...(F.colors||[]), el.value].slice(0,6); else F.colors=[el.value, ...(F.colors||[]).slice(1)]; F.color=F.colors[0]; ED.saver.schedule(); rerenderEditor(); return; }
+  if (el.dataset.qkPhoto!=null){ const files=[...el.files]; el.value=''; quickAddBlobs(files); return; }
+  if (el.dataset.restore!=null){ if (!el.files[0]) return; PENDING_RESTORE = el.files[0]; el.value=''; $('#restoreSlot').innerHTML = `<div class="confirm"><span>Заменить все записи и фото данными из «${esc(PENDING_RESTORE.name)}»? То, что сейчас в приложении, пропадёт.</span><div class="grid2f"><button class="btn danger sm" data-restore-yes>Заменить</button><button class="btn line sm" data-restore-no>Отмена</button></div></div>`; return; }
+});
+async function handleFiles(input){
+  const key = input.dataset.img; const files = [...input.files]; input.value=''; if (!files.length || !ED) return;
+  const ed = ED; setSave('Загружаю фото…');
+  for (const f of files){ try{ const r = await uploadPhoto(f);
+      if (ed.kind==='yarn'){ const old = ed.form.photo; ed.form.photo = r.id; const col = await extractColors(r.blob); ed.form.colors = col.colors; ed.form.color = col.colors[0]; ed.form.multi = col.multi; if (old) setTimeout(()=>gcBlobs([old]), 1500); }
+      else (ed.form[key] ||= []).push(r.id);
+      ed.saver.schedule(); if (ED===ed) rerenderEditor();
+    }catch(err){ toast('Фото не загрузилось'); } }
+}
+async function setProj(id, patch){ try{ await db.collection('projects').doc(id).update({...patch, updatedAt:Date.now()}); }catch(e){ toast('Не получилось сохранить'); } }
+
+sheet.addEventListener('click', async e => {
+  const t = e.target.closest('button,[data-lb]'); if (!t) return;
+  const fr = STACK.at(-1); if (!fr) return;
+  if (t.dataset.back!=null) return back();
+  if (t.dataset.lb){ openLightbox(t.dataset.lb, fr.t==='edit' ? (t.dataset.arr || (ED?.kind==='yarn'?'photo':'')) : ''); return; }
+  if (t.dataset.viewYarn){ openView('yarn', t.dataset.viewYarn); return; }
+  if (t.dataset.viewProject){ openView('project', t.dataset.viewProject); return; }
+  if (t.dataset.editYarn){ openEdit('yarn', t.dataset.editYarn); return; }
+  if (t.dataset.editProject){ openEdit('project', t.dataset.editProject); return; }
+  if (t.dataset.qt){ quickTimer(t.dataset.qt); return; }
+
+  // ---- views
+  if (fr.t==='view' && fr.kind==='yarn'){
+    const y = yarnById(fr.id); if (!y) return;
+    if (t.dataset.qty){ const b = yarnBalance(y); const nq = Math.max(b.used, num(y.qty) + num(t.dataset.qty)); try{ await db.collection('yarns').doc(y.id).update({qty:nq, updatedAt:Date.now()}); }catch(err){} return; }
+    if (t.dataset.buy){ const n = num($('#buyN').value); if (!n) { toast('Впиши, сколько мотков'); return; } try{ await db.collection('yarns').doc(y.id).update({qty:num(y.qty)+n, updatedAt:Date.now()}); toast(`+${fmtN(n)} в шкаф`); }catch(err){} return; }
+  }
+  if (fr.t==='view' && fr.kind==='project'){
+    const p = projById(fr.id); if (!p) return;
+    if (t.dataset.status){ const s = t.dataset.status; const patch = {status:s};
+      if (s==='wip' && !p.startDate) patch.startDate = today();
+      if (s==='done'){ if (!p.endDate) patch.endDate = today(); if (p.timer){ const stages=clone(p.stages||[]); const st=stages.find(x=>x.id===p.timer.stageId); if (st) st.minutes=num(st.minutes)+Math.max(1,Math.round((Date.now()-p.timer.startedAt)/60000)); patch.stages=stages; patch.timer=null; } }
+      await setProj(p.id, patch); toast({wip:'Поехали!', done:'Готово! Теперь это рецепт', frozen:'На паузе'}[s]||''); return; }
+    if (t.dataset.sq!=null){ const i=+t.dataset.sq; const D=num(p.grannyDone); await setProj(p.id, {grannyDone: (i+1===D) ? i : i+1}); return; }
+    if (t.dataset.setGc!=null){ const n = Math.round(num($('#gcN').value)); if (n>0) await setProj(p.id, {grannyCount:n, grannyDone:0}); return; }
+    if (t.dataset.part!=null){ const parts = clone(p.parts||[]); const x = parts[+t.dataset.part]; if (x){ x.done = !x.done; await setProj(p.id, {parts}); } return; }
+    if (t.dataset.motif){ await setProj(p.id, {motifCount: Math.max(0, num(p.motifCount)+num(t.dataset.motif))}); return; }
+    if (t.dataset.again){ const F=p; const d = newProjectData({status:'plan', category:catOf(F), title:(F.title||catInfo(catOf(F)).name)+' — ещё раз', refs:[...(F.photos||[]).slice(0,1), ...(F.refImgs||[])]});
+      Object.assign(d, {type:F.type||d.type, yarns:(F.yarns||[]).map(a=>({yarnId:a.yarnId, skeins:a.skeins})), stages:(F.stages||[]).map(s=>({id:uid(),kind:s.kind,hook:s.hook||'',minutes:0})), parts:(F.parts||[]).map(x=>({id:uid(),name:x.name,done:false,minutes:0})), grannyCount:F.grannyCount||'', grannyDone:0, motifTarget:F.motifCount||'', motifCount:0, patternImgs:[...(F.patternImgs||[])], patternLink:F.patternLink||'', patternInfo:F.patternInfo||'', patternNotes:F.patternNotes||'', size:F.size||'', gauge:F.gauge||'', hardware:F.hardware||''});
+      const ref = await db.collection('projects').add(d); STACK.pop(); openView('project', ref.id); toast('Новая корзинка в «Планах»'); return; }
+  }
+  // ---- menu
+  if (fr.t==='view' && fr.kind==='menu'){
+    if (t.dataset.backup!=null){ makeBackup(); return; }
+    if (t.dataset.restoreNo!=null){ $('#restoreSlot').innerHTML=''; PENDING_RESTORE=null; return; }
+    if (t.dataset.restoreYes!=null && PENDING_RESTORE){ const f=PENDING_RESTORE; PENDING_RESTORE=null; await restoreBackup(f); drawTop(false); return; }
+    if (t.dataset.ideaAdd!=null){ const v=$('#ideaText').value.trim(); if (!v) return; await db.collection('ideas').add({text:v, createdAt:Date.now()}); toast('Идея записана'); return; }
+    if (t.dataset.ideaDel){ await db.collection('ideas').doc(t.dataset.ideaDel).delete(); return; }
+    if (t.dataset.pickIcon){ MENU.icon=t.dataset.pickIcon; const nm=$('#catName').value; drawTop(false); $('#catName').value=nm; return; }
+    if (t.dataset.pickColor){ MENU.color=t.dataset.pickColor; const nm=$('#catName').value; drawTop(false); $('#catName').value=nm; return; }
+    if (t.dataset.catAdd!=null){ const n=$('#catName').value.trim(); if (!n){ toast('Напиши название'); return; } const list=[...((MEM.meta.get('cats')?.list)||[]), {id:'c'+uid().slice(0,8), name:n, icon:MENU.icon, color:MENU.color}]; await db.collection('meta').doc('cats').set({list}); toast('Категория добавлена'); return; }
+    if (t.dataset.catDel){ const list=((MEM.meta.get('cats')?.list)||[]).filter(c=>c.id!==t.dataset.catDel); await db.collection('meta').doc('cats').set({list}); return; }
+    if (t.dataset.personAdd!=null){ const n=$('#personName').value.trim(); if (!n) return; await db.collection('people').add({name:n, createdAt:Date.now()}); return; }
+    if (t.dataset.personDel){ const slot=document.querySelector(`[data-confirm-slot="${t.dataset.personDel}"]`); slot.innerHTML=`<div class="confirm"><span>Удалить человека? Отметки о подарках останутся без имени.</span><div class="grid2f"><button class="btn danger sm" data-person-del-yes="${t.dataset.personDel}">Удалить</button><button class="btn line sm" data-cancel-slot>Отмена</button></div></div>`; return; }
+    if (t.dataset.personDelYes){ await db.collection('people').doc(t.dataset.personDelYes).delete(); return; }
+    if (t.dataset.cancelSlot!=null){ t.closest('[data-confirm-slot]').innerHTML=''; return; }
+  }
+  // ---- quick add
+  if (fr.t==='quick'){
+    const q = fr.q;
+    if (t.dataset.qkKind){ if (t.dataset.qkKind==='yarn'){ for (const f of q.files){ const col = await extractColors(f.blob); await db.collection('yarns').add({name:'', photo:f.id, colors:col.colors, color:col.colors[0], multi:col.multi, qty:1, createdAt:Date.now(), updatedAt:Date.now()}); } fr.saved = true; STACK.pop(); S.tab='shelf'; toast('Пряжа на полке'); if (!STACK.length){ sheet.innerHTML=''; document.body.style.overflow=''; } render(); return; } q.kind='project'; drawTop(false); return; }
+    if (t.dataset.set==='qstatus'){ q.status = t.dataset.val; drawTop(false); return; }
+    if (t.dataset.qkCat){ q.category = t.dataset.qkCat; drawTop(false); return; }
+    if (t.dataset.qkSave!=null){ if (q.busy) return; const cat = q.category || 'other'; const ids = q.files.map(f=>f.id);
+      const d = newProjectData({status:q.status, category:cat, title:q.title.trim(), photos: q.status==='plan'?[]:ids, refs: q.status==='plan'?ids:[]});
+      const ref = await db.collection('projects').add(d); fr.saved = true; STACK.pop(); S.tab = {plan:'plans', wip:'now', frozen:'now', done:'done'}[q.status]; render(); openView('project', ref.id); return; }
+  }
+  // ---- editors
+  if (fr.t!=='edit' || !ED) return;
+  const F = ED.form;
+  if (t.dataset.set){ let v = t.dataset.val; if (t.dataset.set==='multi'){ v = v==='true'; } setPath(F, t.dataset.set, v);
+    if (t.dataset.set==='category'){ if (v==='snow' && (F.type||'regular')==='regular') F.type='motif'; if (['card','vest'].includes(v) && (F.type||'regular')==='regular'){ F.type='parts'; if (!(F.parts||[]).length) F.parts = PARTS_PRESET[v].map(n=>({id:uid(),name:n,done:false,minutes:0})); } }
+    if (t.dataset.set==='type' && v==='parts' && !(F.parts||[]).length){ const pr = PARTS_PRESET[F.category]; if (pr) F.parts = pr.map(n=>({id:uid(),name:n,done:false,minutes:0})); }
+    if (t.dataset.set==='status'){ if (v==='done' && !F.endDate) F.endDate=today(); if (v==='wip' && !F.startDate) F.startDate=today(); }
+    if (t.dataset.set==='multi' && !v) F.colors = [(F.colors||[])[0]||'#C9B8D6'];
+    ED.saver.schedule(); return rerenderEditor(); }
+  if (t.dataset.preset){ F.parts = [...(F.parts||[]), ...PARTS_PRESET[t.dataset.preset].map(n=>({id:uid(),name:n,done:false,minutes:0}))]; ED.saver.schedule(); return rerenderEditor(); }
+  if (t.dataset.add){ (F[t.dataset.add] ||= []).push(({yarns:{yarnId:'',skeins:''}, stages:{id:uid(),kind:'edge',hook:'',minutes:0}, gifts:{personId:'',qty:1}, parts:{id:uid(),name:'',done:false,minutes:0}})[t.dataset.add]); ED.saver.schedule(); return rerenderEditor(); }
+  if (t.dataset.del){ const [arr,i]=t.dataset.del.split(':'); const it=F[arr][+i]; if (arr==='stages' && F.timer && F.timer.stageId===it.id) F.timer=null; F[arr].splice(+i,1); ED.saver.schedule(); return rerenderEditor(); }
+  if (t.dataset.timerStart){ F.timer = {stageId:t.dataset.timerStart, startedAt:Date.now()}; ED.saver.schedule(); ED.saver.flush(); return rerenderEditor(); }
+  if (t.dataset.timerStop!=null){ const add=Math.max(1,Math.round((Date.now()-F.timer.startedAt)/60000)); const st=(F.stages||[]).find(s=>s.id===F.timer.stageId); if (st) st.minutes=num(st.minutes)+add; F.timer=null; ED.saver.schedule(); ED.saver.flush(); toast(`+ ${fmtMin(add)}`); return rerenderEditor(); }
+  if (t.dataset.rmcolor!=null){ if ((F.colors||[]).length>1){ F.colors.splice(+t.dataset.rmcolor,1); F.color=F.colors[0]; if (F.colors.length===1) F.multi=false; ED.saver.schedule(); rerenderEditor(); } return; }
+  if (t.dataset.recolor!=null && F.photo){ const blob = await (await fetch(img(F.photo))).blob(); const col = await extractColors(blob); F.colors=col.colors; F.color=col.colors[0]; F.multi=col.multi; ED.saver.schedule(); rerenderEditor(); return; }
+  if (t.dataset.newPerson!=null){ const n=$('#newPerson').value.trim(); if(!n) return; const ref = await db.collection('people').add({name:n, createdAt:Date.now()}); (F.gifts ||= []).push({personId:ref.id, qty:1}); ED.saver.schedule(); setTimeout(rerenderEditor, 30); return; }
+  if (t.dataset.delAsk!=null){ $('#delSlot').innerHTML = `<div class="confirm"><span>${ED.kind==='yarn'?'Удалить эту пряжу? Из изделий она тоже пропадёт.':'Удалить изделие вместе с фото?'}</span><div class="grid2f"><button class="btn danger" data-del-yes>Удалить</button><button class="btn line" data-del-no>Отмена</button></div></div>`; return; }
+  if (t.dataset.delNo!=null){ $('#delSlot').innerHTML=''; return; }
+  if (t.dataset.delYes!=null){ const coll = ED.kind==='yarn'?'yarns':'projects'; const id=ED.id; const pics = ED.kind==='yarn' ? [F.photo] : [...(F.photos||[]),...(F.patternImgs||[]),...(F.refImgs||[])];
+    ED.saver.pending=false; clearTimeout(ED.saver.timer);
+    try{ await db.collection(coll).doc(id).delete(); }catch(err){ toast('Не получилось удалить'); return; }
+    STACK.pop(); while (STACK.length && STACK.at(-1).t==='view' && STACK.at(-1).id===id) STACK.pop();
+    ED=null; if (STACK.length) drawTop(true); else { sheet.innerHTML=''; document.body.style.overflow=''; }
+    toast('Удалено'); render(); setTimeout(()=>gcBlobs(pics), 600); return; }
+});
+
+// ================= lightbox =================
+function openLightbox(id, arrKey){
+  $('#lb').innerHTML = `<div class="lb" role="dialog" aria-label="Фото"><div class="bar2"><button class="btn sm" data-lb-close>Закрыть</button>${arrKey?`<button class="btn sm" data-lb-rm="${id}" data-arr="${arrKey}">Убрать</button>`:''}</div><div class="stage"><img src="${img(id)}" alt=""></div><div id="lbConfirm"></div></div>`;
+}
+$('#lb').addEventListener('click', e => {
+  if (e.target.closest('[data-lb-close]') || e.target.classList.contains('stage')){ $('#lb').innerHTML=''; return; }
+  const rm = e.target.closest('[data-lb-rm]');
+  if (rm){ $('#lbConfirm').innerHTML = `<div class="confirm" style="margin:0 16px 16px"><span>Убрать это фото?</span><div class="grid2f"><button class="btn danger sm" data-lb-yes="${rm.dataset.lbRm}" data-arr="${rm.dataset.arr}">Убрать</button><button class="btn line sm" data-lb-no>Отмена</button></div></div>`; return; }
+  if (e.target.closest('[data-lb-no]')){ $('#lbConfirm').innerHTML=''; return; }
+  const yes = e.target.closest('[data-lb-yes]');
+  if (yes && ED){ const key=yes.dataset.arr, id=yes.dataset.lbYes; if (key==='photo') ED.form.photo=''; else { const a=ED.form[key]||[]; const i=a.indexOf(id); if (i>=0) a.splice(i,1); } ED.saver.schedule(); $('#lb').innerHTML=''; rerenderEditor(); setTimeout(()=>gcBlobs([id]), 1500); }
+});
+
+// ================= backup =================
+let PENDING_RESTORE = null;
 const blobToB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
 const b64ToBlob = (b64, type) => { const bin = atob(b64); const u = new Uint8Array(bin.length); for (let i=0;i<bin.length;i++) u[i] = bin.charCodeAt(i); return new Blob([u], {type}); };
 function lastBackup(){ try{ return Number(localStorage.getItem('klubok-backup')||0); }catch(e){ return 0; } }
 async function makeBackup(){
   toast('Готовлю копию…');
   const docs = (await LS.allDocs()).map(d => ({coll:d.coll, id:d.id, data:d.data}));
-  const blobs = [];
-  for (const b of await LS.allBlobs()) blobs.push({id:b.id, type:b.blob.type || 'image/jpeg', b64: await blobToB64(b.blob)});
-  const json = JSON.stringify({app:'klubok', version:1, exportedAt:new Date().toISOString(), docs, blobs});
-  const name = 'klubok-' + new Date().toISOString().slice(0,10) + '.json';
-  const file = new File([json], name, {type:'application/json'});
+  const blobs = []; for (const b of await LS.allBlobs()) blobs.push({id:b.id, type:b.blob.type || 'image/jpeg', b64: await blobToB64(b.blob)});
+  const json = JSON.stringify({app:'klubok', version:2, exportedAt:new Date().toISOString(), docs, blobs});
+  const name = 'klubok-' + today() + '.json'; const file = new File([json], name, {type:'application/json'});
   let shared = false;
   try{ if (navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:'Мой клубок — резервная копия'}); shared = true; } }catch(e){ if (e && e.name === 'AbortError') return; }
   if (!shared){ const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000); }
   try{ localStorage.setItem('klubok-backup', String(Date.now())); }catch(e){}
-  toast('Резервная копия сохранена'); render();
+  toast('Копия сохранена'); redrawIfView();
 }
 async function restoreBackup(file){
   try{
-    const data = JSON.parse(await file.text());
-    if (data.app !== 'klubok' || !Array.isArray(data.docs)) throw new Error('bad');
+    const data = JSON.parse(await file.text()); if (data.app !== 'klubok' || !Array.isArray(data.docs)) throw new Error('bad');
     await LS.clearAll(); Object.values(URLS).forEach(u => URL.revokeObjectURL(u)); for (const k in URLS) delete URLS[k];
     for (const b of (data.blobs||[])){ const blob = b64ToBlob(b.b64, b.type); await LS.putBlob(b.id, blob); URLS[b.id] = URL.createObjectURL(blob); }
     for (const c in MEM) MEM[c].clear();
     for (const d of data.docs){ if (!MEM[d.coll]) continue; await LS.putDoc(d.coll, d.id, d.data); MEM[d.coll].set(d.id, d.data); }
-    for (const c in MEM) emit(c);
-    toast('Всё восстановлено из копии');
+    for (const c in MEM) emit(c); toast('Всё восстановлено');
   }catch(e){ toast('Это не похоже на копию «Моего клубка»'); }
 }
-function backupSection(){
-  const lb = lastBackup(); const days = lb ? Math.floor((Date.now()-lb)/864e5) : null;
-  const stale = !lb || days >= 14;
-  return `<div class="sec-title">Резервная копия</div><section class="sec">
-    <div class="hint ${stale && (S.projects.length || S.yarns.length) ? 'bad' : ''}">${lb ? `Последняя копия: ${days===0?'сегодня':days+' дн. назад'}.` : 'Копию ещё не делала.'} Все записи и фото хранятся только на этом телефоне. Сохраняй копию раз в пару недель в облако или себе в мессенджер.</div>
-    <div class="row-top"><button class="btn" data-backup>Сохранить копию</button><label class="btn ghost">Восстановить<input type="file" accept="application/json,.json" data-restore hidden></label></div>
-    <div id="restoreSlot"></div></section>`;
-}
-document.addEventListener('click', e => { if (e.target.closest('[data-backup]')) makeBackup(); if (e.target.closest('[data-restore-no]')) { $('#restoreSlot').innerHTML=''; } const y = e.target.closest('[data-restore-yes]'); if (y && PENDING_RESTORE){ const f = PENDING_RESTORE; PENDING_RESTORE = null; $('#restoreSlot').innerHTML=''; restoreBackup(f); } });
-let PENDING_RESTORE = null;
-document.addEventListener('change', e => { const el = e.target.closest('[data-restore]'); if (!el || !el.files[0]) return; PENDING_RESTORE = el.files[0]; el.value=''; $('#restoreSlot').innerHTML = `<div class="confirm"><span>Заменить все текущие записи и фото данными из копии «${esc(PENDING_RESTORE.name)}»? Текущие данные пропадут.</span><div class="row-top"><button class="btn danger sm" data-restore-yes>Заменить</button><button class="btn ghost sm" data-restore-no>Отмена</button></div></div>`; });
 
-// ---------- boot ----------
+// ================= timers & boot =================
+function tickAll(){ const now=Date.now(); document.querySelectorAll('[data-tick]').forEach(el=>el.textContent=fmtClock(now-num(el.dataset.tick))); }
+setInterval(tickAll, 1000);
+async function readShared(){
+  const params = new URLSearchParams(location.search); if (!params.has('shared')) return;
+  history.replaceState(null, '', location.pathname);
+  try{ const cache = await caches.open('klubok-share'); const keys = await cache.keys(); const blobs = [];
+    for (const k of keys){ const r = await cache.match(k); if (r) blobs.push(await r.blob()); await cache.delete(k); }
+    if (blobs.length) openQuick('plan', {askKind:true, blobs});
+  }catch(e){}
+}
 render();
 (async () => {
   try{
     try{ await navigator.storage?.persist?.(); }catch(e){}
     for (const b of await LS.allBlobs()) URLS[b.id] = URL.createObjectURL(b.blob);
     for (const d of await LS.allDocs()) if (MEM[d.coll]) MEM[d.coll].set(d.id, d.data);
-    db = localDb; assets = localAssets;
-    for (const c of ['projects','yarns','people','shop']){
+    for (const c of ['projects','yarns','people','shop','ideas','meta']){
       db.collection(c).onSnapshot(snap => {
-        S[c] = snap.docs.map(d => ({id:d.id, ...d.data()}));
-        S.loaded[c] = true;
+        if (c!=='meta') S[c] = snap.docs.map(d => ({id:d.id, ...d.data()}));
+        S.loaded = true;
         if (ED && ED.kind==='project') updateHints();
-        render();
+        render(); redrawIfView();
       });
     }
-  }catch(e){ S.err = 'Браузер не даёт сохранять данные. Открой приложение в Safari или Chrome (не в режиме инкогнито).'; render(); }
+    readShared();
+  }catch(e){ S.err = 'Браузер не даёт сохранять данные. Открой приложение в Chrome (не в режиме инкогнито).'; render(); }
 })();
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
